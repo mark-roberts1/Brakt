@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Brakt.Bot.Identification
@@ -9,29 +10,41 @@ namespace Brakt.Bot.Identification
         public IdContext(Group group)
         {
             Group = group;
-            GroupMember = null;
-            Player = null;
+            Players = new List<Player>();
+            GroupMembers = new List<GroupMember>();
+        }
+
+        public IdContext(Group group, IEnumerable<Player> players, IEnumerable<GroupMember> groupMembers)
+        {
+            Group = group;
+            Players = players ?? new List<Player>();
+            GroupMembers = groupMembers ?? new List<GroupMember>();
         }
 
         public IdContext(Group group, GroupMember groupMember, Player player)
         {
             Group = group;
-            GroupMember = groupMember;
-            Player = player;
+            Players = new List<Player>() { player };
+            GroupMembers = new List<GroupMember> { groupMember };
         }
 
         public IdContext(Player player)
         {
-            Player = player;
             Group = null;
-            GroupMember = null;
+            GroupMembers = new List<GroupMember>();
+            Players = Players = new List<Player>() { player };
         }
 
         public Group Group { get; }
-        public GroupMember GroupMember { get; }
-        public Player Player { get; }
+        public GroupMember GroupMember => GroupMembers.SingleOrDefault();
+        public Player Player => Players.SingleOrDefault();
+        public IEnumerable<Player> Players { get; }
+        public IEnumerable<GroupMember> GroupMembers { get; }
+
         public bool IsPlayerContext => Player != null;
         public bool IsGroupMemberContext => GroupMember != null;
         public bool IsGroupContext => Group != null;
+        public bool IsBulkPlayerContext => Players.Count() > 1;
+        public bool IsBulkGroupMemberContext => GroupMembers.Count() > 1;
     }
 }
