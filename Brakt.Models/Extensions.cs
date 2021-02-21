@@ -54,5 +54,23 @@ namespace Brakt
                 buffer[j] = buffer[i];
             }
         }
+
+        public static bool IsEquivalentTo<T>(this IEnumerable<T> list, IEnumerable<T> compare)
+        {
+            list.ThrowIfNull(nameof(list));
+            compare.ThrowIfNull(nameof(compare));
+
+            foreach (var item in list)
+            {
+                if (!compare.Contains(item)) return false;
+            }
+
+            foreach (var item in compare)
+            {
+                if (!list.Contains(item)) return false;
+            }
+
+            return true;
+        }
     }
 }

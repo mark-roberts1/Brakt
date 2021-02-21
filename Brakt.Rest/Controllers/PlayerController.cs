@@ -51,6 +51,12 @@ namespace Brakt.Rest.Controllers
             return await _statsGenerator.GeneratePlayerStatsAsync(id, cancellationToken);
         }
 
+        [HttpPut("stats")]
+        public async Task<IEnumerable<Statistic>> GetStatisticsAsync([FromBody] PlayerStatsRequest request, CancellationToken cancellationToken)
+        {
+            return await _statsGenerator.GeneratePlayerStatsAsync(request.PlayerId, cancellationToken, request.Tags);
+        }
+
         [HttpGet("{id}/groups")]
         public async Task<IEnumerable<GroupMember>> GetMembershipsAsync([FromRoute] int id, CancellationToken cancellationToken)
         {

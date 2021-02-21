@@ -108,6 +108,21 @@ namespace Brakt.Rest.Data
                 FOREIGN KEY (WinningPlayerId) REFERENCES Player (PlayerId)
             ) WITHOUT ROWID;
 
+            CREATE TABLE IF NOT EXISTS Tag (
+                TagId INTEGER NOT NULL PRIMARY KEY,
+                TagValue TEXT NOT NULL
+            );
+
+            CREATE INDEX Tag_TagValue ON Tag(TagValue);
+
+            CREATE TABLE IF NOT EXISTS TournamentTag (
+                TournamentId INTEGER NOT NULL,
+                TagId INTEGER NOT NULL,
+                FOREIGN KEY (TournamentId) REFERENCES Tournament (TournamentId) ON DELETE CASCADE ON UPDATE NO ACTION,
+                FOREIGN KEY (TagId) REFERENCES Tag (TagId) ON DELETE CASCADE ON UPDATE NO ACTION,
+                PRIMARY KEY (TournamentId, TagId)
+            ) WITHOUT ROWID;
+
             INSERT INTO Migration ( MigrationId ) VALUES ( 1 );
         ";
     }

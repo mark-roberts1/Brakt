@@ -45,5 +45,11 @@ namespace Brakt.Rest.Data
         Task<IEnumerable<TournamentWinner>> GetTournamentWinnersAsync(int tournamentId, CancellationToken cancellationToken);
         Task AddTournamentWinnerAsync(TournamentWinner winner, CancellationToken cancellationToken);
         Task DeleteTournamentWinnerAsync(TournamentWinner winner, CancellationToken cancellationToken);
+        Task<Tag> GetTagAsync(string value, CancellationToken cancellationToken);
+        Task<Tag> GetTagAsync(int tagId, CancellationToken cancellationToken);
+        Task<IEnumerable<Tag>> GetTagsAsync(int tournamentId, CancellationToken cancellationToken);
+        Task<Tag> AddTagAsync(string value, CancellationToken cancellationToken);
+        Task AddTournamentTagAsync(int tournamentId, int tagId, CancellationToken cancellationToken);
+        Task DeleteTournamentTagsAsync(int tournamentId, CancellationToken cancellationToken);
     }
 }

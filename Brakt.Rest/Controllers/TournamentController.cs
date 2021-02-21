@@ -44,14 +44,28 @@ namespace Brakt.Rest.Controllers
 
             var activeTournaments = await _dataLayer.GetTournamentsAsync(request.GroupId, cancellationToken);
 
-            if (activeTournaments.Any(w => w.Name == request.Name && w.StartDate == request.StartDate))
-                throw new ArgumentException("A tournament with the same name is slated for the same time.");
+            if (activeTournaments.Any(w => w.Tags.Select(s => s.TagValue).IsEquivalentTo(request.Tags) && w.StartDate == request.StartDate))
+                throw new ArgumentException("A tournament with the same tags is slated for the same time.");
 
             await _dataLayer.AddTournamentAsync(request, cancellationToken);
 
             activeTournaments = await _dataLayer.GetTournamentsAsync(request.GroupId, cancellationToken);
 
-            return activeTournaments.First(w => w.Name == request.Name && w.StartDate == request.StartDate);
+            var tournament = activeTournaments.First(w => w.Tags.Select(s => s.TagValue).IsEquivalentTo(request.Tags) && w.StartDate == request.StartDate);
+
+            foreach (var val in request.Tags)
+            {
+                var tag = await _dataLayer.GetTagAsync(val, cancellationToken);
+
+                if (tag == null)
+                {
+                    tag = await _dataLayer.AddTagAsync(val, cancellationToken);
+                }
+
+                await _dataLayer.AddTournamentTagAsync(tournament.TournamentId, tag.TagId, cancellationToken);
+            }
+
+            return tournament;
         }
 
         [HttpPut]

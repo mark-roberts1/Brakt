@@ -16,33 +16,33 @@ namespace Brakt.Rest.Logic
             _dataLayer = dataLayer;
         }
 
-        public async Task<IEnumerable<Statistic>> GenerateGroupStatsAsync(int groupId, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Statistic>> GenerateGroupStatsAsync(int groupId, CancellationToken cancellationToken, IEnumerable<string> tags = null)
         {
             var members = await _dataLayer.GetGroupMembersAsync(groupId, cancellationToken);
             var stats = new List<Statistic>();
 
             foreach (var member in members)
             {
-                stats.Add(await GenerateStatsAsync(member.PlayerId, groupId, cancellationToken));
+                stats.Add(await GenerateStatsAsync(member.PlayerId, groupId, cancellationToken, tags));
             }
 
             return stats;
         }
 
-        public async Task<IEnumerable<Statistic>> GeneratePlayerStatsAsync(int playerId, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Statistic>> GeneratePlayerStatsAsync(int playerId, CancellationToken cancellationToken, IEnumerable<string> tags = null)
         {
             var memberships = await _dataLayer.GetGroupMembersForPlayerAsync(playerId, cancellationToken);
             var stats = new List<Statistic>();
 
             foreach (var membership in memberships)
             {
-                stats.Add(await GenerateStatsAsync(playerId, membership.GroupId, cancellationToken));
+                stats.Add(await GenerateStatsAsync(playerId, membership.GroupId, cancellationToken, tags));
             }
 
             return stats;
         }
 
-        public async Task<Statistic> GenerateStatsAsync(int playerId, int groupId, CancellationToken cancellationToken)
+        public async Task<Statistic> GenerateStatsAsync(int playerId, int groupId, CancellationToken cancellationToken, IEnumerable<string> tags = null)
         {
             var stat = new Statistic
             {
@@ -57,6 +57,26 @@ namespace Brakt.Rest.Logic
 
             foreach (var tournament in tournaments)
             {
+                if (tags == null || !tags.Any())
+                {
+                    // aggregate all stats
+                }
+                else
+                {
+                    var tournamentContainsTags = true;
+
+                    foreach (var tag in tags)
+                    {
+                        if (!tournament.Tags.Any(w => w.TagValue == tag))
+                        {
+                            tournamentContainsTags = false;
+                            break;
+                        }
+                    }
+
+                    if (!tournamentContainsTags) continue;
+                }
+
                 var tournamentStat = await GetTournamentStatsAsync(playerId, tournament, cancellationToken);
 
                 stat.TournamentWins += tournamentStat.TournamentWins;

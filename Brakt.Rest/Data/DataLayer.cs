@@ -121,7 +121,6 @@ namespace Brakt.Rest.Data
                 TournamentQueries.INSERT,
                 CommandType.Text,
                 connection,
-                DbParameter.From("$name", request.Name),
                 DbParameter.From("$groupId", request.GroupId),
                 DbParameter.From("$bracketType", (int)(request.BracketType ?? BracketType.Swiss)),
                 DbParameter.From("$startDate", request.StartDate.ToBlob()),
@@ -402,7 +401,13 @@ namespace Brakt.Rest.Data
                 connection,
                 DbParameter.From("$tournamentId", tournamentId));
 
-            return await _executor.ExecuteSingleAsync(command, TournamentQueries.TournamentDataMapper, cancellationToken);
+            var tournament = await _executor.ExecuteSingleAsync(command, TournamentQueries.TournamentDataMapper, cancellationToken);
+
+            if (tournament == null) return tournament;
+
+            tournament.Tags = (await GetTagsAsync(tournamentId, cancellationToken)).ToList();
+
+            return tournament;
         }
 
         public async Task<IEnumerable<TournamentEntry>> GetTournamentEntriesAsync(int tournamentId, CancellationToken cancellationToken)
@@ -426,7 +431,12 @@ namespace Brakt.Rest.Data
                 connection,
                 DbParameter.From("$groupId", groupId));
 
-            return await _executor.ExecuteAsync(command, TournamentQueries.TournamentDataMapper, cancellationToken);
+            var tournaments = await _executor.ExecuteAsync(command, TournamentQueries.TournamentDataMapper, cancellationToken);
+
+            foreach (var tournament in tournaments)
+                tournament.Tags = (await GetTagsAsync(tournament.TournamentId, cancellationToken)).ToList();
+
+            return tournaments;
         }
 
         public async Task<IEnumerable<TournamentWinner>> GetTournamentWinnersAsync(int tournamentId, CancellationToken cancellationToken)
@@ -544,7 +554,6 @@ namespace Brakt.Rest.Data
                 TournamentQueries.UPDATE,
                 CommandType.Text,
                 connection,
-                DbParameter.From("$name", tournament.Name),
                 DbParameter.From("$groupId", tournament.GroupId),
                 DbParameter.From("$bracketType", (int)tournament.BracketType),
                 DbParameter.From("$startDate", tournament.StartDate.ToBlob()),
@@ -554,6 +563,74 @@ namespace Brakt.Rest.Data
 
             await connection.OpenAsync(cancellationToken);
             await command.ExecuteNonQueryAsync(cancellationToken);
+
+            if (tournament.Tags == null || !tournament.Tags.Any()) return;
+
+            await DeleteTournamentTagsAsync(tournament.TournamentId, cancellationToken);
+            
+            foreach (var tag in tournament.Tags)
+            {
+                await AddTournamentTagAsync(tournament.TournamentId, tag.TagId, cancellationToken);
+            }
+        }
+
+        public async Task<Tag> GetTagAsync(string value, CancellationToken cancellationToken)
+        {
+            using var connection = _connectionFactory.BuildConnection(_connectionString);
+            using var command = _commandFactory.BuildCommand(TagQueries.SELECT_BY_VALUE, CommandType.Text, connection, DbParameter.From("$tagValue", value));
+
+            return await _executor.ExecuteSingleAsync(command, TagQueries.TagMapper, cancellationToken);
+        }
+
+        public async Task<Tag> GetTagAsync(int tagId, CancellationToken cancellationToken)
+        {
+            using var connection = _connectionFactory.BuildConnection(_connectionString);
+            using var command = _commandFactory.BuildCommand(TagQueries.SELECT_BY_ID, CommandType.Text, connection, DbParameter.From("$tagId", tagId));
+
+            return await _executor.ExecuteSingleAsync(command, TagQueries.TagMapper, cancellationToken);
+        }
+
+        public async Task<IEnumerable<Tag>> GetTagsAsync(int tournamentId, CancellationToken cancellationToken)
+        {
+            using var connection = _connectionFactory.BuildConnection(_connectionString);
+            using var command = _commandFactory.BuildCommand(TagQueries.SELECT_BY_TOURNAMENTID, CommandType.Text, connection, DbParameter.From("$tournamentId", tournamentId));
+
+            return await _executor.ExecuteAsync(command, TagQueries.TagMapper, cancellationToken);
+        }
+
+        public async Task<Tag> AddTagAsync(string value, CancellationToken cancellationToken)
+        {
+            using var connection = _connectionFactory.BuildConnection(_connectionString);
+            using var command = _commandFactory.BuildCommand(TagQueries.INSERT, CommandType.Text, connection, DbParameter.From("$tagValue", value));
+
+            await _executor.ExecuteNonQueryAsync(command, cancellationToken);
+
+            return await GetTagAsync(value, cancellationToken);
+        }
+
+        public async Task AddTournamentTagAsync(int tournamentId, int tagId, CancellationToken cancellationToken)
+        {
+            using var connection = _connectionFactory.BuildConnection(_connectionString);
+            using var command = _commandFactory.BuildCommand(
+                TagQueries.INSERT_TOURNAMENTTAG, 
+                CommandType.Text, 
+                connection, 
+                DbParameter.From("$tournamentId", tournamentId),
+                DbParameter.From("$tagId", tagId));
+
+            await _executor.ExecuteNonQueryAsync(command, cancellationToken);
+        }
+
+        public async Task DeleteTournamentTagsAsync(int tournamentId, CancellationToken cancellationToken)
+        {
+            using var connection = _connectionFactory.BuildConnection(_connectionString);
+            using var command = _commandFactory.BuildCommand(
+                TagQueries.DELETE_TOURNAMENTTAG_TOURNAMENT,
+                CommandType.Text,
+                connection,
+                DbParameter.From("$tournamentId", tournamentId));
+
+            await _executor.ExecuteNonQueryAsync(command, cancellationToken);
         }
     }
 }

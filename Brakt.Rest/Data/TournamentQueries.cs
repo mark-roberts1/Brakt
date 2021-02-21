@@ -11,7 +11,6 @@ namespace Brakt.Rest.Data
         internal const string SELECT = @"
             SELECT
                 TournamentId,
-                Name,
                 GroupId,
                 BracketType,
                 StartDate,
@@ -26,7 +25,6 @@ namespace Brakt.Rest.Data
         internal const string SELECT_BYGROUPID = @"
             SELECT
                 TournamentId,
-                Name,
                 GroupId,
                 BracketType,
                 StartDate,
@@ -42,7 +40,6 @@ namespace Brakt.Rest.Data
 
         internal const string INSERT = @"
             INSERT INTO Tournament (
-                Name,
                 GroupId,
                 BracketType,
                 StartDate,
@@ -50,7 +47,6 @@ namespace Brakt.Rest.Data
                 NumberOfRounds
             )
             VALUES (
-                $name,
                 $groupId,
                 $bracketType,
                 $startDate,
@@ -63,7 +59,6 @@ namespace Brakt.Rest.Data
             UPDATE
                 Tournament
             SET
-                Name = $name,
                 GroupId = $groupId,
                 BracketType = $bracketType,
                 StartDate = $startDate,
@@ -138,7 +133,6 @@ namespace Brakt.Rest.Data
             return new Tournament
             {
                 TournamentId = reader.GetInt32(reader.GetOrdinal("TournamentId")),
-                Name = reader.GetString(reader.GetOrdinal("Name")),
                 StartDate = (reader["StartDate"] as byte[]).FromBlob<DateTime>(),
                 BracketType = (BracketType)reader.GetInt32(reader.GetOrdinal("BracketType")),
                 Completed = reader.GetByte(reader.GetOrdinal("Completed")).ToBool(),
