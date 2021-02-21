@@ -130,6 +130,24 @@ namespace Brakt.Client
             return JsonSerializer.Deserialize<List<Statistic>>(response.ThrowIfError().Content);
         }
 
+        public async Task<IEnumerable<Statistic>> GetGroupStatisticsAsync(GroupStatsRequest requestBody, CancellationToken cancellationToken)
+        {
+            var request = new RestRequest($"{GROUP}/stats", Method.PUT).AddJsonBody(requestBody);
+
+            var response = await _restClient.ExecuteAsync(request, cancellationToken);
+
+            return JsonSerializer.Deserialize<List<Statistic>>(response.ThrowIfError().Content);
+        }
+
+        public async Task<Statistic> GetGroupStatisticsAsync(int playerId, GroupStatsRequest requestBody, CancellationToken cancellationToken)
+        {
+            var request = new RestRequest($"{GROUP}/stats/{playerId}/player", Method.PUT).AddJsonBody(requestBody);
+
+            var response = await _restClient.ExecuteAsync(request, cancellationToken);
+
+            return JsonSerializer.Deserialize<Statistic>(response.ThrowIfError().Content);
+        }
+
         public async Task<GroupMember> GetMemberAsync(int groupId, int playerId, CancellationToken cancellationToken)
         {
             var request = new RestRequest($"{GROUP}/{groupId}/member/{playerId}", Method.GET);
@@ -187,6 +205,15 @@ namespace Brakt.Client
         public async Task<IEnumerable<Statistic>> GetPlayerStatisticsAsync(int playerId, CancellationToken cancellationToken)
         {
             var request = new RestRequest($"{PLAYER}/{playerId}/stats", Method.GET);
+
+            var response = await _restClient.ExecuteAsync(request, cancellationToken);
+
+            return JsonSerializer.Deserialize<List<Statistic>>(response.ThrowIfError().Content);
+        }
+
+        public async Task<IEnumerable<Statistic>> GetPlayerStatisticsAsync(PlayerStatsRequest requestBody, CancellationToken cancellationToken)
+        {
+            var request = new RestRequest($"{PLAYER}/stats", Method.PUT).AddJsonBody(requestBody);
 
             var response = await _restClient.ExecuteAsync(request, cancellationToken);
 

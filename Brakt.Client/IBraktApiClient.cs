@@ -20,10 +20,13 @@ namespace Brakt.Client
         Task SetGroupOwnerAsync(int groupId, int playerId, CancellationToken cancellationToken, bool isOwner = true);
         Task<IEnumerable<Tournament>> GetTournamentsAsync(int groupId, CancellationToken cancellationToken);
         Task<IEnumerable<Statistic>> GetGroupStatisticsAsync(int groupId, CancellationToken cancellationToken);
+        Task<IEnumerable<Statistic>> GetGroupStatisticsAsync(GroupStatsRequest request, CancellationToken cancellationToken);
+        Task<Statistic> GetGroupStatisticsAsync(int playerId, GroupStatsRequest request, CancellationToken cancellationToken);
         Task<Player> GetDiscordPlayerAsync(long discordId, CancellationToken cancellationToken);
         Task<Player> GetPlayerAsync(int playerId, CancellationToken cancellationToken);
         Task<Player> CreatePlayerAsync(Player player, CancellationToken cancellationToken);
         Task<IEnumerable<Statistic>> GetPlayerStatisticsAsync(int playerId, CancellationToken cancellationToken);
+        Task<IEnumerable<Statistic>> GetPlayerStatisticsAsync(PlayerStatsRequest request, CancellationToken cancellationToken);
         Task<IEnumerable<GroupMember>> GetMembershipsAsync(int playerId, CancellationToken cancellationToken);
         Task<Round> GetRoundAsync(int roundId, CancellationToken cancellationToken);
         Task<Round> GetRoundAsync(int tournamentId, int roundNumber, CancellationToken cancellationToken);
