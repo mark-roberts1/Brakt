@@ -1,4 +1,7 @@
-﻿using Brakt.Client;
+﻿using Brakt.Bot.EventHandlers;
+using Brakt.Bot.Identification;
+using Brakt.Bot.Interpretor;
+using Brakt.Client;
 using DSharpPlus;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,6 +18,11 @@ namespace Brakt.Bot
         {
             services.Configure<DiscordConfig>(configuration.GetSection("Discord"));
             services.Configure<ApiConfiguration>(configuration.GetSection("BraktClient"));
+
+            services.AddTransient<IContextFactory, IdContextFactory>();
+            services.AddTransient<ILexer, DiscordCommandLexer>();
+            services.AddTransient<IDiscordEventHandler, DiscordEventHandler>();
+
             return services;
         }
     }

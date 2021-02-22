@@ -7,6 +7,6 @@ namespace Brakt.Bot.Interpretor
     public interface ILexer
     {
         bool IsBraktCommand(string message);
-        string[] TokenizeBraktCommand(string command);
+        CommandTokens TokenizeBraktCommand(string command);
     }
 }
