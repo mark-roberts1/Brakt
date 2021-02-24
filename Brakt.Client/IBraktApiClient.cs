@@ -19,6 +19,7 @@ namespace Brakt.Client
         Task SetGroupAdminAsync(int groupId, int playerId, CancellationToken cancellationToken, bool isAdmin = true);
         Task SetGroupOwnerAsync(int groupId, int playerId, CancellationToken cancellationToken, bool isOwner = true);
         Task<IEnumerable<Tournament>> GetTournamentsAsync(int groupId, CancellationToken cancellationToken);
+        Task<IEnumerable<Round>> GetTournamentRoundsAsync(int tournamentId, CancellationToken cancellationToken);
         Task<IEnumerable<Statistic>> GetGroupStatisticsAsync(int groupId, CancellationToken cancellationToken);
         Task<IEnumerable<Statistic>> GetGroupStatisticsAsync(GroupStatsRequest request, CancellationToken cancellationToken);
         Task<Statistic> GetGroupStatisticsAsync(int playerId, GroupStatsRequest request, CancellationToken cancellationToken);

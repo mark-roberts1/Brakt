@@ -256,6 +256,15 @@ namespace Brakt.Client
             return JsonSerializer.Deserialize<Tournament>(response.ThrowIfError().Content);
         }
 
+        public async Task<IEnumerable<Round>> GetTournamentRoundsAsync(int tournamentId, CancellationToken cancellationToken)
+        {
+            var request = new RestRequest($"{TOURNAMENT}/{tournamentId}/rounds", Method.GET);
+
+            var response = await _restClient.ExecuteAsync(request, cancellationToken);
+
+            return JsonSerializer.Deserialize<List<Round>>(response.ThrowIfError().Content);
+        }
+
         public async Task<IEnumerable<Tournament>> GetTournamentsAsync(int groupId, CancellationToken cancellationToken)
         {
             var request = new RestRequest($"{GROUP}/{groupId}/tournaments", Method.GET);

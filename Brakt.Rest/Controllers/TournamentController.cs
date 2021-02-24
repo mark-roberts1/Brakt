@@ -27,6 +27,12 @@ namespace Brakt.Rest.Controllers
             return await _dataLayer.GetTournamentAsync(id, cancellationToken);
         }
 
+        [HttpGet("{id}/rounds")]
+        public async Task<IEnumerable<Round>> GetTournamentRoundsAsync([FromRoute] int id, CancellationToken cancellationToken)
+        {
+            return await _dataLayer.GetRoundsAsync(id, cancellationToken);
+        }
+
         [HttpDelete("{id}")]
         public async Task DeleteTournamentAsync([FromRoute] int id, CancellationToken cancellationToken)
         {
