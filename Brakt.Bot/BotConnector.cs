@@ -10,7 +10,7 @@ namespace Brakt.Bot
 {
     public class BotConnector : BackgroundService
     {
-        private readonly DiscordClient client;
+        public static DiscordClient Client { get; private set; }
         private readonly IDiscordEventHandler _eventDelegates;
 
         public BotConnector(IOptions<DiscordConfig> configOptions, IDiscordEventHandler eventDelegates)
@@ -21,28 +21,28 @@ namespace Brakt.Bot
                 TokenType = configOptions.Value.TokenType
             };
 
-            client = new DiscordClient(config);
+            Client = new DiscordClient(config);
             _eventDelegates = eventDelegates;
         }
 
         public override async Task StartAsync(CancellationToken cancellationToken)
         {
-            client.MessageCreated += _eventDelegates.HandleAsync;
-            client.GuildUpdated += _eventDelegates.HandleAsync;
-            client.GuildCreated += _eventDelegates.HandleAsync;
-            client.GuildBanRemoved += _eventDelegates.HandleAsync;
-            client.GuildBanAdded += _eventDelegates.HandleAsync;
-            client.GuildMemberRemoved += _eventDelegates.HandleAsync;
-            client.MessageReactionRemoved += _eventDelegates.HandleAsync;
-            client.MessageReactionAdded += _eventDelegates.HandleAsync;
-            client.GuildMembersChunked += _eventDelegates.HandleAsync;
-            client.UserUpdated += _eventDelegates.HandleAsync;
-            client.GuildMemberAdded += _eventDelegates.HandleAsync;
-            client.UserSettingsUpdated += _eventDelegates.HandleAsync;
-            client.MessageUpdated += _eventDelegates.HandleAsync;
-            client.GuildMemberUpdated += _eventDelegates.HandleAsync;
+            Client.MessageCreated += _eventDelegates.HandleAsync;
+            Client.GuildUpdated += _eventDelegates.HandleAsync;
+            Client.GuildCreated += _eventDelegates.HandleAsync;
+            Client.GuildBanRemoved += _eventDelegates.HandleAsync;
+            Client.GuildBanAdded += _eventDelegates.HandleAsync;
+            Client.GuildMemberRemoved += _eventDelegates.HandleAsync;
+            Client.MessageReactionRemoved += _eventDelegates.HandleAsync;
+            Client.MessageReactionAdded += _eventDelegates.HandleAsync;
+            Client.GuildMembersChunked += _eventDelegates.HandleAsync;
+            Client.UserUpdated += _eventDelegates.HandleAsync;
+            Client.GuildMemberAdded += _eventDelegates.HandleAsync;
+            Client.UserSettingsUpdated += _eventDelegates.HandleAsync;
+            Client.MessageUpdated += _eventDelegates.HandleAsync;
+            Client.GuildMemberUpdated += _eventDelegates.HandleAsync;
 
-            await client.ConnectAsync();
+            await Client.ConnectAsync();
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -53,22 +53,22 @@ namespace Brakt.Bot
 
         public override async Task StopAsync(CancellationToken cancellationToken)
         {
-            client.MessageCreated -= _eventDelegates.HandleAsync;
-            client.GuildUpdated -= _eventDelegates.HandleAsync;
-            client.GuildCreated -= _eventDelegates.HandleAsync;
-            client.GuildBanRemoved -= _eventDelegates.HandleAsync;
-            client.GuildBanAdded -= _eventDelegates.HandleAsync;
-            client.GuildMemberRemoved -= _eventDelegates.HandleAsync;
-            client.MessageReactionRemoved -= _eventDelegates.HandleAsync;
-            client.MessageReactionAdded -= _eventDelegates.HandleAsync;
-            client.GuildMembersChunked -= _eventDelegates.HandleAsync;
-            client.UserUpdated -= _eventDelegates.HandleAsync;
-            client.GuildMemberAdded -= _eventDelegates.HandleAsync;
-            client.UserSettingsUpdated -= _eventDelegates.HandleAsync;
-            client.MessageUpdated -= _eventDelegates.HandleAsync;
-            client.GuildMemberUpdated -= _eventDelegates.HandleAsync;
+            Client.MessageCreated -= _eventDelegates.HandleAsync;
+            Client.GuildUpdated -= _eventDelegates.HandleAsync;
+            Client.GuildCreated -= _eventDelegates.HandleAsync;
+            Client.GuildBanRemoved -= _eventDelegates.HandleAsync;
+            Client.GuildBanAdded -= _eventDelegates.HandleAsync;
+            Client.GuildMemberRemoved -= _eventDelegates.HandleAsync;
+            Client.MessageReactionRemoved -= _eventDelegates.HandleAsync;
+            Client.MessageReactionAdded -= _eventDelegates.HandleAsync;
+            Client.GuildMembersChunked -= _eventDelegates.HandleAsync;
+            Client.UserUpdated -= _eventDelegates.HandleAsync;
+            Client.GuildMemberAdded -= _eventDelegates.HandleAsync;
+            Client.UserSettingsUpdated -= _eventDelegates.HandleAsync;
+            Client.MessageUpdated -= _eventDelegates.HandleAsync;
+            Client.GuildMemberUpdated -= _eventDelegates.HandleAsync;
 
-            await client.DisconnectAsync();
+            await Client.DisconnectAsync();
         }
     }
 }
