@@ -2,6 +2,7 @@
 using Brakt.Bot.Identification;
 using Brakt.Bot.Interpretor;
 using Brakt.Client;
+using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using System;
 using System.Collections.Generic;
@@ -42,6 +43,7 @@ namespace Brakt.Bot.Commands
             }
 
             await _client.RemovePlayerAsync(tournamentId, userContext.Player.PlayerId, cancellationToken);
+            await args.Message.CreateReactionAsync(DiscordEmoji.FromName(BotConnector.Client, ":heavy_check_mark:"));
         }
 
         private bool TryGetTournamentId(IEnumerable<string> args, out int tournamentId)
