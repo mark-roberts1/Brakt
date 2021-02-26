@@ -24,15 +24,27 @@ namespace Brakt.Bot.Identification
         public IdContext(Group group, GroupMember groupMember, Player player)
         {
             Group = group;
-            Players = new List<Player>() { player };
-            GroupMembers = new List<GroupMember> { groupMember };
+            
+            if (player != null)
+                Players = new List<Player>() { player };
+            else
+                Players = new List<Player>();
+
+            if (groupMember != null)
+                GroupMembers = new List<GroupMember> { groupMember };
+            else
+                GroupMembers = new List<GroupMember>();
         }
 
         public IdContext(Player player)
         {
             Group = null;
             GroupMembers = new List<GroupMember>();
-            Players = Players = new List<Player>() { player };
+
+            if (player != null)
+                Players = new List<Player>() { player };
+            else
+                Players = new List<Player>();
         }
 
         public Group Group { get; }

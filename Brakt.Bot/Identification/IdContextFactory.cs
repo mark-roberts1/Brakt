@@ -24,9 +24,17 @@ namespace Brakt.Bot.Identification
 
             var player = await GetPlayerCreateIfNecessaryAsync(args.Author, cancellationToken);
 
-            var member = await GetGroupMemberCreateIfNecessaryAsync(group.GroupId, player.PlayerId, cancellationToken);
+            if (group != null && player != null)
+            {
+                var member = await GetGroupMemberCreateIfNecessaryAsync(group.GroupId, player.PlayerId, cancellationToken);
+                return new IdContext(group, member, player);
+            }
+            else if (group != null)
+            {
+                return new IdContext(group);
+            }
 
-            return new IdContext(group, member, player);
+            return new IdContext(player);
         }
 
         public async Task<IdContext> GetIdContextAsync(GuildUpdateEventArgs args, CancellationToken cancellationToken)
@@ -49,9 +57,17 @@ namespace Brakt.Bot.Identification
 
             var player = await GetPlayerCreateIfNecessaryAsync(args.Member, cancellationToken);
 
-            var member = await GetGroupMemberCreateIfNecessaryAsync(group.GroupId, player.PlayerId, cancellationToken);
+            if (group != null && player != null)
+            {
+                var member = await GetGroupMemberCreateIfNecessaryAsync(group.GroupId, player.PlayerId, cancellationToken);
+                return new IdContext(group, member, player);
+            }
+            else if (group != null)
+            {
+                return new IdContext(group);
+            }
 
-            return new IdContext(group, member, player);
+            return new IdContext(player);
         }
 
         public async Task<IdContext> GetIdContextAsync(GuildBanRemoveEventArgs args, CancellationToken cancellationToken)
@@ -60,9 +76,17 @@ namespace Brakt.Bot.Identification
 
             var player = await GetPlayerCreateIfNecessaryAsync(args.Member, cancellationToken);
 
-            var member = await GetGroupMemberCreateIfNecessaryAsync(group.GroupId, player.PlayerId, cancellationToken);
+            if (group != null && player != null)
+            {
+                var member = await GetGroupMemberCreateIfNecessaryAsync(group.GroupId, player.PlayerId, cancellationToken);
+                return new IdContext(group, member, player);
+            }
+            else if (group != null)
+            {
+                return new IdContext(group);
+            }
 
-            return new IdContext(group, member, player);
+            return new IdContext(player);
         }
 
         public async Task<IdContext> GetIdContextAsync(GuildMemberRemoveEventArgs args, CancellationToken cancellationToken)
@@ -71,9 +95,17 @@ namespace Brakt.Bot.Identification
 
             var player = await GetPlayerCreateIfNecessaryAsync(args.Member, cancellationToken);
 
-            var member = await GetGroupMemberCreateIfNecessaryAsync(group.GroupId, player.PlayerId, cancellationToken);
+            if (group != null && player != null)
+            {
+                var member = await GetGroupMemberCreateIfNecessaryAsync(group.GroupId, player.PlayerId, cancellationToken);
+                return new IdContext(group, member, player);
+            }
+            else if (group != null)
+            {
+                return new IdContext(group);
+            }
 
-            return new IdContext(group, member, player);
+            return new IdContext(player);
         }
 
         public async Task<IdContext> GetIdContextAsync(MessageReactionRemoveEventArgs args, CancellationToken cancellationToken)
@@ -82,9 +114,17 @@ namespace Brakt.Bot.Identification
 
             var player = await GetPlayerCreateIfNecessaryAsync(args.User, cancellationToken);
 
-            var member = await GetGroupMemberCreateIfNecessaryAsync(group.GroupId, player.PlayerId, cancellationToken);
+            if (group != null && player != null)
+            {
+                var member = await GetGroupMemberCreateIfNecessaryAsync(group.GroupId, player.PlayerId, cancellationToken);
+                return new IdContext(group, member, player);
+            }
+            else if (group != null)
+            {
+                return new IdContext(group);
+            }
 
-            return new IdContext(group, member, player);
+            return new IdContext(player);
         }
 
         public async Task<IdContext> GetIdContextAsync(MessageReactionAddEventArgs args, CancellationToken cancellationToken)
@@ -93,9 +133,17 @@ namespace Brakt.Bot.Identification
 
             var player = await GetPlayerCreateIfNecessaryAsync(args.User, cancellationToken);
 
-            var member = await GetGroupMemberCreateIfNecessaryAsync(group.GroupId, player.PlayerId, cancellationToken);
+            if (group != null && player != null)
+            {
+                var member = await GetGroupMemberCreateIfNecessaryAsync(group.GroupId, player.PlayerId, cancellationToken);
+                return new IdContext(group, member, player);
+            }
+            else if (group != null)
+            {
+                return new IdContext(group);
+            }
 
-            return new IdContext(group, member, player);
+            return new IdContext(player);
         }
 
         public async Task<IdContext> GetIdContextAsync(GuildMembersChunkEventArgs args, CancellationToken cancellationToken)
@@ -130,9 +178,17 @@ namespace Brakt.Bot.Identification
 
             var player = await GetPlayerCreateIfNecessaryAsync(args.Member, cancellationToken);
 
-            var member = await GetGroupMemberCreateIfNecessaryAsync(group.GroupId, player.PlayerId, cancellationToken);
+            if (group != null && player != null)
+            {
+                var member = await GetGroupMemberCreateIfNecessaryAsync(group.GroupId, player.PlayerId, cancellationToken);
+                return new IdContext(group, member, player);
+            }
+            else if (group != null)
+            {
+                return new IdContext(group);
+            }
 
-            return new IdContext(group, member, player);
+            return new IdContext(player);
         }
 
         public async Task<IdContext> GetIdContextAsync(UserSettingsUpdateEventArgs args, CancellationToken cancellationToken)
@@ -148,9 +204,17 @@ namespace Brakt.Bot.Identification
 
             var player = await GetPlayerCreateIfNecessaryAsync(args.Author, cancellationToken);
 
-            var member = await GetGroupMemberCreateIfNecessaryAsync(group.GroupId, player.PlayerId, cancellationToken);
+            if (group != null && player != null)
+            {
+                var member = await GetGroupMemberCreateIfNecessaryAsync(group.GroupId, player.PlayerId, cancellationToken);
+                return new IdContext(group, member, player);
+            }
+            else if (group != null)
+            {
+                return new IdContext(group);
+            }
 
-            return new IdContext(group, member, player);
+            return new IdContext(player);
         }
 
         public async Task<IdContext> GetIdContextAsync(GuildMemberUpdateEventArgs args, CancellationToken cancellationToken)
@@ -159,13 +223,23 @@ namespace Brakt.Bot.Identification
 
             var player = await GetPlayerCreateIfNecessaryAsync(args.Member, cancellationToken);
 
-            var member = await GetGroupMemberCreateIfNecessaryAsync(group.GroupId, player.PlayerId, cancellationToken);
+            if (group != null && player != null)
+            {
+                var member = await GetGroupMemberCreateIfNecessaryAsync(group.GroupId, player.PlayerId, cancellationToken);
+                return new IdContext(group, member, player);
+            }
+            else if (group != null)
+            {
+                return new IdContext(group);
+            }
 
-            return new IdContext(group, member, player);
+            return new IdContext(player);
         }
 
         private async Task<Group> GetGroupCreateIfNecessaryAsync(DiscordGuild discordGroup, CancellationToken cancellationToken)
         {
+            if (discordGroup == null) return null;
+
             var owner = await GetPlayerCreateIfNecessaryAsync(discordGroup.Owner, cancellationToken);
 
             Group group;
@@ -195,6 +269,8 @@ namespace Brakt.Bot.Identification
 
         private async Task<Player> GetPlayerCreateIfNecessaryAsync(DiscordUser discordUser, CancellationToken cancellationToken)
         {
+            if (discordUser == null) return null;
+
             Player player;
 
             try
