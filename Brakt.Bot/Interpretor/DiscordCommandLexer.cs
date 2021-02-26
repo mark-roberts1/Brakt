@@ -22,7 +22,7 @@ namespace Brakt.Bot.Interpretor
         //      * #tag1 #tag2 ... #tagN - useful for finding player/group statistics. At least one tag argument is required
         //  * <list> - Lists tournaments associated with the server, past or anticipated.
         //    * Arguments:
-        //      * [pending] - optional. If specified, this will only show incomplete tournaments.
+        //      * [all] - optional. If specified, this will show all tournaments.
         //  * <cancel> - cancel a tournament. If underway, stats will be cleared for the given tournament.
         //    * Arguments:
         //      * [tournament id] - an integer id given when a tournament is generated. This can be found with the list command if it has been forgotten.

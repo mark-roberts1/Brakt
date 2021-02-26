@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Brakt.Bot.Commands
 {
-    public class StatsCommandHandler : CommandHandlerBase, ICommandHandler
+    public class StatsCommandHandler : ICommandHandler
     {
         private readonly IBraktApiClient _client;
         private readonly IResponseFormatter _formatter;
