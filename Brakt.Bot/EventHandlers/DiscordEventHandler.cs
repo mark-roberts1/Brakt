@@ -1,4 +1,5 @@
-﻿using Brakt.Bot.Identification;
+﻿using Brakt.Bot.Commands;
+using Brakt.Bot.Identification;
 using Brakt.Bot.Interpretor;
 using Brakt.Client;
 using DSharpPlus.EventArgs;
@@ -16,13 +17,20 @@ namespace Brakt.Bot.EventHandlers
         private readonly ILexer _lexer;
         private readonly IContextFactory _contextFactory;
         private readonly IBraktApiClient _client;
+        private readonly ICommandHandlerFactory _cmdFactory;
 
-        public DiscordEventHandler(Func<CancellationTokenSource> ctsFac, ILexer lexer, IContextFactory contextFactory, IBraktApiClient client)
+        public DiscordEventHandler(
+            Func<CancellationTokenSource> ctsFac,
+            ILexer lexer,
+            IContextFactory contextFactory,
+            IBraktApiClient client,
+            ICommandHandlerFactory cmdFactory)
         {
             _ctsFac = ctsFac;
             _lexer = lexer;
             _contextFactory = contextFactory;
             _client = client;
+            _cmdFactory = cmdFactory;
         }
 
         public async Task HandleAsync(MessageCreateEventArgs args)
@@ -33,6 +41,16 @@ namespace Brakt.Bot.EventHandlers
 
             using var cts = _ctsFac();
             var userCtx = await _contextFactory.GetIdContextAsync(args, cts.Token);
+
+            var command = _cmdFactory.GetCommandHandler(cmdToken.Command);
+
+            if (command == null)
+            {
+                await args.Message.RespondAsync("Unrecognized command :(");
+                return;
+            }
+
+            await command.ExecuteAsync(args, cmdToken, userCtx, cts.Token);
         }
 
         public async Task HandleAsync(MessageReactionRemoveEventArgs args)
@@ -43,6 +61,16 @@ namespace Brakt.Bot.EventHandlers
 
             using var cts = _ctsFac();
             var userCtx = await _contextFactory.GetIdContextAsync(args, cts.Token);
+
+            var command = _cmdFactory.GetCommandHandler(cmdToken.Command);
+
+            if (command == null)
+            {
+                await args.Message.RespondAsync("Unrecognized command :(");
+                return;
+            }
+
+            await command.ExecuteAsync(args, cmdToken, userCtx, cts.Token);
         }
 
         public async Task HandleAsync(MessageReactionAddEventArgs args)
@@ -53,6 +81,16 @@ namespace Brakt.Bot.EventHandlers
 
             using var cts = _ctsFac();
             var userCtx = await _contextFactory.GetIdContextAsync(args, cts.Token);
+
+            var command = _cmdFactory.GetCommandHandler(cmdToken.Command);
+
+            if (command == null)
+            {
+                await args.Message.RespondAsync("Unrecognized command :(");
+                return;
+            }
+
+            await command.ExecuteAsync(args, cmdToken, userCtx, cts.Token);
         }
 
         public async Task HandleAsync(MessageUpdateEventArgs args)
@@ -63,6 +101,16 @@ namespace Brakt.Bot.EventHandlers
 
             using var cts = _ctsFac();
             var userCtx = await _contextFactory.GetIdContextAsync(args, cts.Token);
+
+            var command = _cmdFactory.GetCommandHandler(cmdToken.Command);
+
+            if (command == null)
+            {
+                await args.Message.RespondAsync("Unrecognized command :(");
+                return;
+            }
+
+            await command.ExecuteAsync(args, cmdToken, userCtx, cts.Token);
         }
 
         public async Task HandleAsync(GuildUpdateEventArgs args)

@@ -7,9 +7,12 @@ namespace Brakt.Bot.Commands
 {
     public class CommandHandlerFactory : ICommandHandlerFactory
     {
-        private static readonly IList<ICommandHandler> _handlers = new List<ICommandHandler>
+        private readonly IEnumerable<ICommandHandler> _handlers;
+
+        public CommandHandlerFactory(IEnumerable<ICommandHandler> handlers)
         {
-        };
+            _handlers = handlers;
+        }
 
         public ICommandHandler GetCommandHandler(string name)
         {
