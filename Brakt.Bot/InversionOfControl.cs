@@ -14,6 +14,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Text.Json;
 
 namespace Brakt.Bot
 {
@@ -38,7 +39,7 @@ namespace Brakt.Bot
 
         private static Func<CancellationTokenSource> GetTokenSource(IServiceProvider provider)
         {
-            return () => new CancellationTokenSource(10000);
+            return () => new CancellationTokenSource();
         }
 
         public static void RegisterAllTypes<T>(this IServiceCollection services, Assembly[] assemblies, ServiceLifetime lifetime = ServiceLifetime.Transient)

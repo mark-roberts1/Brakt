@@ -251,7 +251,7 @@ namespace Brakt.Rest.Data
         {
             using var connection = _connectionFactory.BuildConnection(_connectionString);
             using var command = _commandFactory.BuildCommand(
-                GroupQueries.SELECT_BY_GROUPID,
+                GroupQueries.SELECT_BY_DISCORDID,
                 CommandType.Text,
                 connection,
                 DbParameter.From("$discordId", discordId));

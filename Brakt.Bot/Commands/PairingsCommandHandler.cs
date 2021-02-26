@@ -23,7 +23,7 @@ namespace Brakt.Bot.Commands
             _formatter = formatter;
         }
 
-        public string Command => throw new NotImplementedException();
+        public string Command => "pairings";
 
         public async Task ExecuteAsync(MessageCreateEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken)
         {

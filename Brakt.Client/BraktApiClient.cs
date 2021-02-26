@@ -1,6 +1,7 @@
 ﻿using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
@@ -37,7 +38,9 @@ namespace Brakt.Client
 
             var response = await _restClient.ExecuteAsync(request, cancellationToken);
 
-            return JsonSerializer.Deserialize<Round>(response.ThrowIfError().Content);
+            if (response.StatusCode == HttpStatusCode.NoContent) return null;
+
+            return JsonSerializer.Deserialize<Round>(response.ThrowIfError().Content, ApiConfiguration.SerializerOptions);
         }
 
         public async Task<IEnumerable<TournamentWinner>> CompleteTournamentAsync(int tournamentId, CancellationToken cancellationToken)
@@ -46,7 +49,9 @@ namespace Brakt.Client
 
             var response = await _restClient.ExecuteAsync(request, cancellationToken);
 
-            return JsonSerializer.Deserialize<List<TournamentWinner>>(response.ThrowIfError().Content);
+            if (response.StatusCode == HttpStatusCode.NoContent) return null;
+
+            return JsonSerializer.Deserialize<List<TournamentWinner>>(response.ThrowIfError().Content, ApiConfiguration.SerializerOptions);
         }
 
         public async Task<Group> CreateGroupAsync(CreateGroupRequest group, CancellationToken cancellationToken)
@@ -55,7 +60,9 @@ namespace Brakt.Client
 
             var response = await _restClient.ExecuteAsync(request, cancellationToken);
 
-            return JsonSerializer.Deserialize<Group>(response.ThrowIfError().Content);
+            if (response.StatusCode == HttpStatusCode.NoContent) return null;
+
+            return JsonSerializer.Deserialize<Group>(response.ThrowIfError().Content, ApiConfiguration.SerializerOptions);
         }
 
         public async Task<Player> CreatePlayerAsync(Player player, CancellationToken cancellationToken)
@@ -64,7 +71,9 @@ namespace Brakt.Client
 
             var response = await _restClient.ExecuteAsync(request, cancellationToken);
 
-            return JsonSerializer.Deserialize<Player>(response.ThrowIfError().Content);
+            if (response.StatusCode == HttpStatusCode.NoContent) return null;
+
+            return JsonSerializer.Deserialize<Player>(response.ThrowIfError().Content, ApiConfiguration.SerializerOptions);
         }
 
         public async Task<Tournament> CreateTournamentAsync(CreateTournamentRequest tournament, CancellationToken cancellationToken)
@@ -73,7 +82,9 @@ namespace Brakt.Client
 
             var response = await _restClient.ExecuteAsync(request, cancellationToken);
 
-            return JsonSerializer.Deserialize<Tournament>(response.ThrowIfError().Content);
+            if (response.StatusCode == HttpStatusCode.NoContent) return null;
+
+            return JsonSerializer.Deserialize<Tournament>(response.ThrowIfError().Content, ApiConfiguration.SerializerOptions);
         }
 
         public async Task DeleteTournamentAsync(int tournamentId, CancellationToken cancellationToken)
@@ -91,7 +102,9 @@ namespace Brakt.Client
 
             var response = await _restClient.ExecuteAsync(request, cancellationToken);
 
-            return JsonSerializer.Deserialize<List<Player>>(response.ThrowIfError().Content);
+            if (response.StatusCode == HttpStatusCode.NoContent) return null;
+
+            return JsonSerializer.Deserialize<List<Player>>(response.ThrowIfError().Content, ApiConfiguration.SerializerOptions);
         }
 
         public async Task<Group> GetDiscordGroupAsync(long discordId, CancellationToken cancellationToken)
@@ -100,7 +113,9 @@ namespace Brakt.Client
 
             var response = await _restClient.ExecuteAsync(request, cancellationToken);
 
-            return JsonSerializer.Deserialize<Group>(response.ThrowIfError().Content);
+            if (response.StatusCode == HttpStatusCode.NoContent) return null;
+
+            return JsonSerializer.Deserialize<Group>(response.ThrowIfError().Content, ApiConfiguration.SerializerOptions);
         }
 
         public async Task<Player> GetDiscordPlayerAsync(long discordId, CancellationToken cancellationToken)
@@ -109,7 +124,9 @@ namespace Brakt.Client
 
             var response = await _restClient.ExecuteAsync(request, cancellationToken);
 
-            return JsonSerializer.Deserialize<Player>(response.ThrowIfError().Content);
+            if (response.StatusCode == HttpStatusCode.NoContent) return null;
+
+            return JsonSerializer.Deserialize<Player>(response.ThrowIfError().Content, ApiConfiguration.SerializerOptions);
         }
 
         public async Task<Group> GetGroupAsync(int groupId, CancellationToken cancellationToken)
@@ -118,7 +135,9 @@ namespace Brakt.Client
 
             var response = await _restClient.ExecuteAsync(request, cancellationToken);
 
-            return JsonSerializer.Deserialize<Group>(response.ThrowIfError().Content);
+            if (response.StatusCode == HttpStatusCode.NoContent) return null;
+
+            return JsonSerializer.Deserialize<Group>(response.ThrowIfError().Content, ApiConfiguration.SerializerOptions);
         }
 
         public async Task<IEnumerable<Statistic>> GetGroupStatisticsAsync(int groupId, CancellationToken cancellationToken)
@@ -127,7 +146,9 @@ namespace Brakt.Client
 
             var response = await _restClient.ExecuteAsync(request, cancellationToken);
 
-            return JsonSerializer.Deserialize<List<Statistic>>(response.ThrowIfError().Content);
+            if (response.StatusCode == HttpStatusCode.NoContent) return null;
+
+            return JsonSerializer.Deserialize<List<Statistic>>(response.ThrowIfError().Content, ApiConfiguration.SerializerOptions);
         }
 
         public async Task<IEnumerable<Statistic>> GetGroupStatisticsAsync(GroupStatsRequest requestBody, CancellationToken cancellationToken)
@@ -136,7 +157,9 @@ namespace Brakt.Client
 
             var response = await _restClient.ExecuteAsync(request, cancellationToken);
 
-            return JsonSerializer.Deserialize<List<Statistic>>(response.ThrowIfError().Content);
+            if (response.StatusCode == HttpStatusCode.NoContent) return null;
+
+            return JsonSerializer.Deserialize<List<Statistic>>(response.ThrowIfError().Content, ApiConfiguration.SerializerOptions);
         }
 
         public async Task<Statistic> GetGroupStatisticsAsync(int playerId, GroupStatsRequest requestBody, CancellationToken cancellationToken)
@@ -145,7 +168,9 @@ namespace Brakt.Client
 
             var response = await _restClient.ExecuteAsync(request, cancellationToken);
 
-            return JsonSerializer.Deserialize<Statistic>(response.ThrowIfError().Content);
+            if (response.StatusCode == HttpStatusCode.NoContent) return null;
+
+            return JsonSerializer.Deserialize<Statistic>(response.ThrowIfError().Content, ApiConfiguration.SerializerOptions);
         }
 
         public async Task<GroupMember> GetMemberAsync(int groupId, int playerId, CancellationToken cancellationToken)
@@ -154,7 +179,9 @@ namespace Brakt.Client
 
             var response = await _restClient.ExecuteAsync(request, cancellationToken);
 
-            return JsonSerializer.Deserialize<GroupMember>(response.ThrowIfError().Content);
+            if (response.StatusCode == HttpStatusCode.NoContent) return null;
+
+            return JsonSerializer.Deserialize<GroupMember>(response.ThrowIfError().Content, ApiConfiguration.SerializerOptions);
         }
 
         public async Task<IEnumerable<GroupMember>> GetMembersAsync(int groupId, CancellationToken cancellationToken)
@@ -163,7 +190,9 @@ namespace Brakt.Client
 
             var response = await _restClient.ExecuteAsync(request, cancellationToken);
 
-            return JsonSerializer.Deserialize<List<GroupMember>>(response.ThrowIfError().Content);
+            if (response.StatusCode == HttpStatusCode.NoContent) return null;
+
+            return JsonSerializer.Deserialize<List<GroupMember>>(response.ThrowIfError().Content, ApiConfiguration.SerializerOptions);
         }
 
         public async Task<IEnumerable<GroupMember>> GetMembershipsAsync(int playerId, CancellationToken cancellationToken)
@@ -172,7 +201,9 @@ namespace Brakt.Client
 
             var response = await _restClient.ExecuteAsync(request, cancellationToken);
 
-            return JsonSerializer.Deserialize<List<GroupMember>>(response.ThrowIfError().Content);
+            if (response.StatusCode == HttpStatusCode.NoContent) return null;
+
+            return JsonSerializer.Deserialize<List<GroupMember>>(response.ThrowIfError().Content, ApiConfiguration.SerializerOptions);
         }
 
         public async Task<IEnumerable<Pairing>> GetPairingsAsync(int roundId, CancellationToken cancellationToken)
@@ -181,7 +212,9 @@ namespace Brakt.Client
 
             var response = await _restClient.ExecuteAsync(request, cancellationToken);
 
-            return JsonSerializer.Deserialize<List<Pairing>>(response.ThrowIfError().Content);
+            if (response.StatusCode == HttpStatusCode.NoContent) return null;
+
+            return JsonSerializer.Deserialize<List<Pairing>>(response.ThrowIfError().Content, ApiConfiguration.SerializerOptions);
         }
 
         public async Task<Player> GetPlayerAsync(int playerId, CancellationToken cancellationToken)
@@ -190,7 +223,9 @@ namespace Brakt.Client
 
             var response = await _restClient.ExecuteAsync(request, cancellationToken);
 
-            return JsonSerializer.Deserialize<Player>(response.ThrowIfError().Content);
+            if (response.StatusCode == HttpStatusCode.NoContent) return null;
+
+            return JsonSerializer.Deserialize<Player>(response.ThrowIfError().Content, ApiConfiguration.SerializerOptions);
         }
 
         public async Task<IEnumerable<Player>> GetPlayersAsync(int groupId, CancellationToken cancellationToken)
@@ -199,7 +234,9 @@ namespace Brakt.Client
 
             var response = await _restClient.ExecuteAsync(request, cancellationToken);
 
-            return JsonSerializer.Deserialize<List<Player>>(response.ThrowIfError().Content);
+            if (response.StatusCode == HttpStatusCode.NoContent) return null;
+
+            return JsonSerializer.Deserialize<List<Player>>(response.ThrowIfError().Content, ApiConfiguration.SerializerOptions);
         }
 
         public async Task<IEnumerable<Statistic>> GetPlayerStatisticsAsync(int playerId, CancellationToken cancellationToken)
@@ -208,7 +245,9 @@ namespace Brakt.Client
 
             var response = await _restClient.ExecuteAsync(request, cancellationToken);
 
-            return JsonSerializer.Deserialize<List<Statistic>>(response.ThrowIfError().Content);
+            if (response.StatusCode == HttpStatusCode.NoContent) return null;
+
+            return JsonSerializer.Deserialize<List<Statistic>>(response.ThrowIfError().Content, ApiConfiguration.SerializerOptions);
         }
 
         public async Task<IEnumerable<Statistic>> GetPlayerStatisticsAsync(PlayerStatsRequest requestBody, CancellationToken cancellationToken)
@@ -217,7 +256,9 @@ namespace Brakt.Client
 
             var response = await _restClient.ExecuteAsync(request, cancellationToken);
 
-            return JsonSerializer.Deserialize<List<Statistic>>(response.ThrowIfError().Content);
+            if (response.StatusCode == HttpStatusCode.NoContent) return null;
+
+            return JsonSerializer.Deserialize<List<Statistic>>(response.ThrowIfError().Content, ApiConfiguration.SerializerOptions);
         }
 
         public async Task<Round> GetRoundAsync(int roundId, CancellationToken cancellationToken)
@@ -226,7 +267,9 @@ namespace Brakt.Client
 
             var response = await _restClient.ExecuteAsync(request, cancellationToken);
 
-            return JsonSerializer.Deserialize<Round>(response.ThrowIfError().Content);
+            if (response.StatusCode == HttpStatusCode.NoContent) return null;
+
+            return JsonSerializer.Deserialize<Round>(response.ThrowIfError().Content, ApiConfiguration.SerializerOptions);
         }
 
         public async Task<Round> GetRoundAsync(int tournamentId, int roundNumber, CancellationToken cancellationToken)
@@ -235,7 +278,9 @@ namespace Brakt.Client
 
             var response = await _restClient.ExecuteAsync(request, cancellationToken);
 
-            return JsonSerializer.Deserialize<Round>(response.ThrowIfError().Content);
+            if (response.StatusCode == HttpStatusCode.NoContent) return null;
+
+            return JsonSerializer.Deserialize<Round>(response.ThrowIfError().Content, ApiConfiguration.SerializerOptions);
         }
 
         public async Task<IEnumerable<PairingResult>> GetRoundResultsAsync(int roundId, CancellationToken cancellationToken)
@@ -244,7 +289,9 @@ namespace Brakt.Client
 
             var response = await _restClient.ExecuteAsync(request, cancellationToken);
 
-            return JsonSerializer.Deserialize<List<PairingResult>>(response.ThrowIfError().Content);
+            if (response.StatusCode == HttpStatusCode.NoContent) return null;
+
+            return JsonSerializer.Deserialize<List<PairingResult>>(response.ThrowIfError().Content, ApiConfiguration.SerializerOptions);
         }
 
         public async Task<Tournament> GetTournamentAsync(int tournamentId, CancellationToken cancellationToken)
@@ -253,7 +300,9 @@ namespace Brakt.Client
 
             var response = await _restClient.ExecuteAsync(request, cancellationToken);
 
-            return JsonSerializer.Deserialize<Tournament>(response.ThrowIfError().Content);
+            if (response.StatusCode == HttpStatusCode.NoContent) return null;
+
+            return JsonSerializer.Deserialize<Tournament>(response.ThrowIfError().Content, ApiConfiguration.SerializerOptions);
         }
 
         public async Task<IEnumerable<Round>> GetTournamentRoundsAsync(int tournamentId, CancellationToken cancellationToken)
@@ -262,7 +311,9 @@ namespace Brakt.Client
 
             var response = await _restClient.ExecuteAsync(request, cancellationToken);
 
-            return JsonSerializer.Deserialize<List<Round>>(response.ThrowIfError().Content);
+            if (response.StatusCode == HttpStatusCode.NoContent) return null;
+
+            return JsonSerializer.Deserialize<List<Round>>(response.ThrowIfError().Content, ApiConfiguration.SerializerOptions);
         }
 
         public async Task<IEnumerable<Tournament>> GetTournamentsAsync(int groupId, CancellationToken cancellationToken)
@@ -271,7 +322,9 @@ namespace Brakt.Client
 
             var response = await _restClient.ExecuteAsync(request, cancellationToken);
 
-            return JsonSerializer.Deserialize<List<Tournament>>(response.ThrowIfError().Content);
+            if (response.StatusCode == HttpStatusCode.NoContent) return null;
+
+            return JsonSerializer.Deserialize<List<Tournament>>(response.ThrowIfError().Content, ApiConfiguration.SerializerOptions);
         }
 
         public async Task RegisterPlayerAsync(TournamentEntry entry, CancellationToken cancellationToken)
@@ -307,7 +360,9 @@ namespace Brakt.Client
 
             var response = await _restClient.ExecuteAsync(request, cancellationToken);
 
-            return JsonSerializer.Deserialize<Round>(response.ThrowIfError().Content);
+            if (response.StatusCode == HttpStatusCode.NoContent) return null;
+
+            return JsonSerializer.Deserialize<Round>(response.ThrowIfError().Content, ApiConfiguration.SerializerOptions);
         }
 
         public async Task SetGroupAdminAsync(int groupId, int playerId, CancellationToken cancellationToken, bool isAdmin = true)
@@ -334,7 +389,9 @@ namespace Brakt.Client
 
             var response = await _restClient.ExecuteAsync(request, cancellationToken);
 
-            return JsonSerializer.Deserialize<Round>(response.ThrowIfError().Content);
+            if (response.StatusCode == HttpStatusCode.NoContent) return null;
+
+            return JsonSerializer.Deserialize<Round>(response.ThrowIfError().Content, ApiConfiguration.SerializerOptions);
         }
 
         public async Task<Tournament> UpdateTournamentAsync(Tournament tournament, CancellationToken cancellationToken)
@@ -343,7 +400,9 @@ namespace Brakt.Client
 
             var response = await _restClient.ExecuteAsync(request, cancellationToken);
 
-            return JsonSerializer.Deserialize<Tournament>(response.ThrowIfError().Content);
+            if (response.StatusCode == HttpStatusCode.NoContent) return null;
+
+            return JsonSerializer.Deserialize<Tournament>(response.ThrowIfError().Content, ApiConfiguration.SerializerOptions);
         }
     }
 }

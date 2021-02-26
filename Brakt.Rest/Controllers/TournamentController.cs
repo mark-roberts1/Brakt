@@ -57,7 +57,7 @@ namespace Brakt.Rest.Controllers
 
             activeTournaments = await _dataLayer.GetTournamentsAsync(request.GroupId, cancellationToken);
 
-            var tournament = activeTournaments.First(w => w.Tags.Select(s => s.TagValue).IsEquivalentTo(request.Tags) && w.StartDate == request.StartDate);
+            var tournament = activeTournaments.First(w => w.StartDate == request.StartDate);
 
             foreach (var val in request.Tags)
             {

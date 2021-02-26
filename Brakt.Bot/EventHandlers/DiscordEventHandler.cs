@@ -35,82 +35,110 @@ namespace Brakt.Bot.EventHandlers
 
         public async Task HandleAsync(MessageCreateEventArgs args)
         {
-            if (!_lexer.IsBraktCommand(args.Message.Content)) return;
-
-            var cmdToken = _lexer.TokenizeBraktCommand(args.Message.Content);
-
-            using var cts = _ctsFac();
-            var userCtx = await _contextFactory.GetIdContextAsync(args, cts.Token);
-
-            var command = _cmdFactory.GetCommandHandler(cmdToken.Command);
-
-            if (command == null)
+            try
             {
-                await args.Message.RespondAsync("Unrecognized command :(");
-                return;
-            }
+                if (!_lexer.IsBraktCommand(args.Message.Content)) return;
 
-            await command.ExecuteAsync(args, cmdToken, userCtx, cts.Token);
+                var cmdToken = _lexer.TokenizeBraktCommand(args.Message.Content);
+
+                using var cts = _ctsFac();
+                var userCtx = await _contextFactory.GetIdContextAsync(args, cts.Token);
+
+                var command = _cmdFactory.GetCommandHandler(cmdToken.Command);
+
+                if (command == null)
+                {
+                    await args.Message.RespondAsync("Unrecognized command :(");
+                    return;
+                }
+
+                await command.ExecuteAsync(args, cmdToken, userCtx, cts.Token);
+            }
+            catch (Exception e)
+            {
+                await args.Message.RespondAsync(e.Message);
+            }
         }
 
         public async Task HandleAsync(MessageReactionRemoveEventArgs args)
         {
-            if (!_lexer.IsBraktCommand(args.Message.Content)) return;
-
-            var cmdToken = _lexer.TokenizeBraktCommand(args.Message.Content);
-
-            using var cts = _ctsFac();
-            var userCtx = await _contextFactory.GetIdContextAsync(args, cts.Token);
-
-            var command = _cmdFactory.GetCommandHandler(cmdToken.Command);
-
-            if (command == null)
+            try
             {
-                await args.Message.RespondAsync("Unrecognized command :(");
-                return;
-            }
+                if (!_lexer.IsBraktCommand(args.Message.Content)) return;
 
-            await command.ExecuteAsync(args, cmdToken, userCtx, cts.Token);
+                var cmdToken = _lexer.TokenizeBraktCommand(args.Message.Content);
+
+                using var cts = _ctsFac();
+                var userCtx = await _contextFactory.GetIdContextAsync(args, cts.Token);
+
+                var command = _cmdFactory.GetCommandHandler(cmdToken.Command);
+
+                if (command == null)
+                {
+                    await args.Message.RespondAsync("Unrecognized command :(");
+                    return;
+                }
+
+                await command.ExecuteAsync(args, cmdToken, userCtx, cts.Token);
+            }
+            catch (Exception e)
+            {
+                await args.Message.RespondAsync(e.Message);
+            }
         }
 
         public async Task HandleAsync(MessageReactionAddEventArgs args)
         {
-            if (!_lexer.IsBraktCommand(args.Message.Content)) return;
-
-            var cmdToken = _lexer.TokenizeBraktCommand(args.Message.Content);
-
-            using var cts = _ctsFac();
-            var userCtx = await _contextFactory.GetIdContextAsync(args, cts.Token);
-
-            var command = _cmdFactory.GetCommandHandler(cmdToken.Command);
-
-            if (command == null)
+            try
             {
-                await args.Message.RespondAsync("Unrecognized command :(");
-                return;
-            }
+                if (!_lexer.IsBraktCommand(args.Message.Content)) return;
 
-            await command.ExecuteAsync(args, cmdToken, userCtx, cts.Token);
+                var cmdToken = _lexer.TokenizeBraktCommand(args.Message.Content);
+
+                using var cts = _ctsFac();
+                var userCtx = await _contextFactory.GetIdContextAsync(args, cts.Token);
+
+                var command = _cmdFactory.GetCommandHandler(cmdToken.Command);
+
+                if (command == null)
+                {
+                    await args.Message.RespondAsync("Unrecognized command :(");
+                    return;
+                }
+
+                await command.ExecuteAsync(args, cmdToken, userCtx, cts.Token);
+            }
+            catch (Exception e)
+            {
+                await args.Message.RespondAsync(e.Message);
+            }
         }
 
         public async Task HandleAsync(MessageUpdateEventArgs args)
         {
-            if (!_lexer.IsBraktCommand(args.Message.Content)) return;
-
-            var cmdToken = _lexer.TokenizeBraktCommand(args.Message.Content);
-
-            using var cts = _ctsFac();
-            var userCtx = await _contextFactory.GetIdContextAsync(args, cts.Token);
-
-            var command = _cmdFactory.GetCommandHandler(cmdToken.Command);
-
-            if (command == null)
+            try
             {
-                await args.Message.RespondAsync("Unrecognized command :(");
-                return;
-            }
+                if (!_lexer.IsBraktCommand(args.Message.Content)) return;
 
-            await command.ExecuteAsync(args, cmdToken, userCtx, cts.Token);
+                var cmdToken = _lexer.TokenizeBraktCommand(args.Message.Content);
+
+                using var cts = _ctsFac();
+                var userCtx = await _contextFactory.GetIdContextAsync(args, cts.Token);
+
+                var command = _cmdFactory.GetCommandHandler(cmdToken.Command);
+
+                if (command == null)
+                {
+                    await args.Message.RespondAsync("Unrecognized command :(");
+                    return;
+                }
+
+                await command.ExecuteAsync(args, cmdToken, userCtx, cts.Token);
+            }
+            catch (Exception e)
+            {
+                await args.Message.RespondAsync(e.Message);
+            }
         }
 
         public async Task HandleAsync(GuildUpdateEventArgs args)

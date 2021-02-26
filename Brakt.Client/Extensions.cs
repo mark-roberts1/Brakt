@@ -12,7 +12,7 @@ namespace Brakt.Client
         {
             if ((int)response.StatusCode >= 400)
             {
-                var ex = JsonSerializer.Deserialize<ApiError>(response.Content);
+                var ex = JsonSerializer.Deserialize<ApiError>(response.Content, ApiConfiguration.SerializerOptions);
 
                 throw new Exception(ex.Message);
             }

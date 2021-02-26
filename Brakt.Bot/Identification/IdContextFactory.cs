@@ -168,7 +168,16 @@ namespace Brakt.Bot.Identification
         {
             var owner = await GetPlayerCreateIfNecessaryAsync(discordGroup.Owner, cancellationToken);
 
-            var group = await _client.GetDiscordGroupAsync((long)discordGroup.Id, cancellationToken);
+            Group group;
+
+            try
+            {
+                group = await _client.GetDiscordGroupAsync((long)discordGroup.Id, cancellationToken);
+            }
+            catch
+            {
+                group = null;
+            }
 
             if (group == null)
             {
@@ -186,7 +195,16 @@ namespace Brakt.Bot.Identification
 
         private async Task<Player> GetPlayerCreateIfNecessaryAsync(DiscordUser discordUser, CancellationToken cancellationToken)
         {
-            var player = await _client.GetDiscordPlayerAsync((long)discordUser.Id, cancellationToken);
+            Player player;
+
+            try
+            {
+                player = await _client.GetDiscordPlayerAsync((long)discordUser.Id, cancellationToken);
+            }
+            catch
+            {
+                player = null;
+            }
 
             if (player == null)
             {
@@ -203,7 +221,16 @@ namespace Brakt.Bot.Identification
 
         private async Task<GroupMember> GetGroupMemberCreateIfNecessaryAsync(int groupId, int playerId, CancellationToken cancellationToken)
         {
-            var member = await _client.GetMemberAsync(groupId, playerId, cancellationToken);
+            GroupMember member;
+
+            try
+            {
+                member = await _client.GetMemberAsync(groupId, playerId, cancellationToken);
+            }
+            catch
+            {
+                member = null;
+            }
 
             if (member == null)
             {

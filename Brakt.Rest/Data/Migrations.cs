@@ -49,7 +49,6 @@ namespace Brakt.Rest.Data
 
             CREATE TABLE IF NOT EXISTS Tournament (
                 TournamentId INTEGER NOT NULL PRIMARY KEY,
-                Name TEXT NOT NULL,
                 GroupId INTEGER NOT NULL,
                 BracketType INTEGER NOT NULL,
                 StartDate BLOB NOT NULL,
