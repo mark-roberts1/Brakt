@@ -44,7 +44,7 @@ namespace Brakt.Bot.Commands
 
             await _client.RegisterPlayerAsync(new TournamentEntry { TournamentId = tournamentId, PlayerId = userContext.Player.PlayerId }, cancellationToken);
 
-            await args.Message.CreateReactionAsync(DiscordEmoji.FromName(BotConnector.Client, ":heavy_check_mark:"));
+            await args.Message.CreateReactionAsync(DiscordEmoji.FromName(BotConnector.Client, ":thumbsup:"));
         }
 
         private bool TryGetTournamentId(IEnumerable<string> args, out int tournamentId)

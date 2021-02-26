@@ -100,7 +100,7 @@ namespace Brakt.Bot.Commands
                             await args.Message.RespondAsync($"This round has completed. When ready to advance to the next round, use ```brakt advance {tournament.TournamentId}");
                         }
 
-                        await args.Message.CreateReactionAsync(DSharpPlus.Entities.DiscordEmoji.FromName(BotConnector.Client, ":heavy_check_mark:"));
+                        await args.Message.CreateReactionAsync(DSharpPlus.Entities.DiscordEmoji.FromName(BotConnector.Client, ":thumbsup:"));
                         return;
                     }
                 }
