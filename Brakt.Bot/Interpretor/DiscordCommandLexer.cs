@@ -19,7 +19,7 @@ namespace Brakt.Bot.Interpretor
 
         public bool IsBraktCommand(string message)
         {
-            return message.ToLower().StartsWith(BRAKT_CMD_INVOKER);
+            return message != null && message.ToLower().StartsWith(BRAKT_CMD_INVOKER);
         }
 
         public CommandTokens TokenizeBraktCommand(string command)

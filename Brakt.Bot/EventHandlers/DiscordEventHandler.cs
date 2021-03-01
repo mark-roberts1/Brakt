@@ -35,6 +35,8 @@ namespace Brakt.Bot.EventHandlers
 
         public async Task HandleAsync(MessageCreateEventArgs args)
         {
+            if (args.Author.IsCurrent) return;
+
             try
             {
                 if (!_lexer.IsBraktCommand(args.Message.Content)) return;
@@ -62,6 +64,8 @@ namespace Brakt.Bot.EventHandlers
 
         public async Task HandleAsync(MessageReactionRemoveEventArgs args)
         {
+            if (args.User.IsCurrent) return;
+
             try
             {
                 if (!_lexer.IsBraktCommand(args.Message.Content)) return;
@@ -89,6 +93,8 @@ namespace Brakt.Bot.EventHandlers
 
         public async Task HandleAsync(MessageReactionAddEventArgs args)
         {
+            if (args.User.IsCurrent) return;
+
             try
             {
                 if (!_lexer.IsBraktCommand(args.Message.Content)) return;
@@ -116,6 +122,8 @@ namespace Brakt.Bot.EventHandlers
 
         public async Task HandleAsync(MessageUpdateEventArgs args)
         {
+            if (args.Author.IsCurrent) return;
+
             try
             {
                 if (!_lexer.IsBraktCommand(args.Message.Content)) return;

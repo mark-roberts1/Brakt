@@ -35,6 +35,7 @@ namespace Brakt.Client
         Task<IEnumerable<PairingResult>> GetRoundResultsAsync(int roundId, CancellationToken cancellationToken);
         Task<Round> ReportPairingResultAsync(int roundId, PairingResult result, CancellationToken cancellationToken);
         Task<Tournament> GetTournamentAsync(int tournamentId, CancellationToken cancellationToken);
+        Task<IEnumerable<TournamentWinner>> GetTournamentWinnersAsync(int tournamentId, CancellationToken cancellationToken);
         Task DeleteTournamentAsync(int tournamentId, CancellationToken cancellationToken);
         Task<Tournament> CreateTournamentAsync(CreateTournamentRequest request, CancellationToken cancellationToken);
         Task<Tournament> UpdateTournamentAsync(Tournament tournament, CancellationToken cancellationToken);

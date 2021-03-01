@@ -13,7 +13,7 @@ namespace Brakt.Bot.Formatters
     public class DiscordResponseFormatter : IResponseFormatter
     {
         private readonly IBraktApiClient _client;
-        
+
         private DataTable GetMockTable()
         {
             var dt = new DataTable();
@@ -38,9 +38,41 @@ namespace Brakt.Bot.Formatters
 
         public async Task<string> FormatAsLeaderboardAsync(IEnumerable<Statistic> stats, CancellationToken cancellationToken)
         {
-            await Task.CompletedTask;
+            using var dt = new DataTable();
 
-            using var dt = GetMockTable();
+            dt.Columns.Add("Rank", typeof(string));
+            dt.Columns.Add("Player", typeof(string));
+            dt.Columns.Add("Wins", typeof(int));
+            dt.Columns.Add("Losses", typeof(int));
+            dt.Columns.Add("Tournament Wins", typeof(int));
+
+            int rank = 0;
+            int prevWins = -1;
+            int prevLosses = -1;
+            int prevTournamentWins = -1;
+            var prefetchData = new List<Player>();
+
+            foreach (var playerId in stats.Select(s => s.PlayerId).Distinct())
+            {
+                prefetchData.Add(await _client.GetPlayerAsync(playerId, cancellationToken));
+            }
+
+            foreach (var stat in stats)
+            {
+                bool rankChanged = false;
+                var player = prefetchData.First(w => w.PlayerId == stat.PlayerId);
+
+                if (stat.Wins != prevWins && stat.Losses != prevLosses && stat.TournamentWins != prevTournamentWins)
+                {
+                    rank++;
+                    prevWins = stat.Wins;
+                    prevLosses = stat.Losses;
+                    prevTournamentWins = stat.TournamentWins;
+                    rankChanged = true;
+                }
+
+                dt.Rows.Add(rankChanged ? $"{rank}." : "", player.Username, stat.Wins, stat.Losses, stat.TournamentWins);
+            }
 
             var stringTable = $"```{AsciiTableGenerator.CreateAsciiTableFromDataTable(dt)}```";
 
@@ -49,9 +81,27 @@ namespace Brakt.Bot.Formatters
 
         public async Task<string> FormatRoundPairingsAsync(Round round, CancellationToken cancellationToken)
         {
-            await Task.CompletedTask;
+            var pairings = await _client.GetPairingsAsync(round.RoundId, cancellationToken);
 
-            using var dt = GetMockTable();
+            var playerIds = pairings.Select(s => s.Player1).Union(pairings.Select(s => s.Player2)).Distinct();
+
+            var players = new List<Player>();
+
+            foreach (var id in playerIds)
+            {
+                players.Add(await _client.GetPlayerAsync(id, cancellationToken));
+            }
+
+            using var dt = new DataTable();
+            dt.Columns.Add("Pairings", typeof(string));
+
+            foreach (var pairing in pairings)
+            {
+                var p1 = players.First(w => w.PlayerId == pairing.Player1);
+                var p2 = players.First(w => w.PlayerId == pairing.Player2);
+
+                dt.Rows.Add($"{p1.Username} vs. {p2.Username}");
+            }
 
             var stringTable = $"```{AsciiTableGenerator.CreateAsciiTableFromDataTable(dt)}```";
 
@@ -60,31 +110,117 @@ namespace Brakt.Bot.Formatters
 
         public async Task<string> FormatStatsAsync(IEnumerable<Statistic> stats, CancellationToken cancellationToken)
         {
-            await Task.CompletedTask;
+            using var dt = new DataTable();
 
-            using var dt = GetMockTable();
+            dt.Columns.Add("Group", typeof(string));
+            dt.Columns.Add("Player", typeof(string));
+            dt.Columns.Add("Wins", typeof(int));
+            dt.Columns.Add("Losses", typeof(int));
+            dt.Columns.Add("Tournament Wins", typeof(int));
+
+            var players = new List<Player>();
+            var groups = new List<Group>();
+
+            foreach (var playerId in stats.Select(s => s.PlayerId).Distinct())
+            {
+                players.Add(await _client.GetPlayerAsync(playerId, cancellationToken));
+            }
+
+            foreach (var groupId in stats.Select(s => s.GroupId).Distinct())
+            {
+                groups.Add(await _client.GetGroupAsync(groupId, cancellationToken));
+            }
+
+            foreach (var stat in stats)
+            {
+                var player = players.First(w => w.PlayerId == stat.PlayerId);
+                var group = groups.First(w => w.GroupId == stat.GroupId);
+
+                dt.Rows.Add(group.GroupName, player.Username, stat.Wins, stat.Losses, stat.TournamentWins);
+            }
 
             var stringTable = $"```{AsciiTableGenerator.CreateAsciiTableFromDataTable(dt)}```";
 
             return stringTable;
         }
 
-        public async Task<string> FormatTournamentListAsync(IEnumerable<Tournament> tournaments, CancellationToken cancellationToken)
+        public Task<string> FormatTournamentListAsync(IEnumerable<Tournament> tournaments, CancellationToken cancellationToken)
         {
-            await Task.CompletedTask;
+            if (tournaments == null || !tournaments.Any()) return Task.FromResult("No tournaments have been played yet. Get cracking!");
 
-            using var dt = GetMockTable();
+            using var dt = new DataTable();
+
+            dt.Columns.Add("Id", typeof(int));
+            dt.Columns.Add("Tags", typeof(string));
+            dt.Columns.Add("Type", typeof(string));
+            dt.Columns.Add("Date", typeof(string));
+            dt.Columns.Add("Completed", typeof(char));
+
+            foreach (var tournament in tournaments)
+            {
+                dt.Rows.Add(
+                    tournament.TournamentId,
+                    string.Join(", ", tournament.Tags.Select(s => s.TagValue)),
+                    $"{tournament.BracketType}",
+                    tournament.StartDate.ToString("yyyy-MM-dd"),
+                    tournament.Completed ? 'Y' : 'N');
+            }
 
             var stringTable = $"```{AsciiTableGenerator.CreateAsciiTableFromDataTable(dt)}```";
 
-            return stringTable;
+            return Task.FromResult(stringTable);
         }
 
         public async Task<string> FormatTournamentResultsAsync(Tournament tournament, CancellationToken cancellationToken)
         {
-            await Task.CompletedTask;
+            if (tournament.Completed)
+            {
+                var winners = await _client.GetTournamentWinnersAsync(tournament.TournamentId, cancellationToken);
 
-            using var dt = GetMockTable();
+                return await FormatTournamentWinnersAsync(winners, cancellationToken);
+            }
+
+            var rounds = await _client.GetTournamentRoundsAsync(tournament.TournamentId, cancellationToken);
+
+            var latestRound = rounds.OrderByDescending(ob => ob.RoundNumber).LastOrDefault();
+
+            var results = await _client.GetRoundResultsAsync(latestRound.RoundId, cancellationToken);
+            var pairings = await _client.GetPairingsAsync(latestRound.RoundId, cancellationToken);
+
+            using var dt = new DataTable();
+            
+            dt.Columns.Add("Winner", typeof(string));
+            dt.Columns.Add("Matchup", typeof(string));
+            dt.Columns.Add("Result", typeof(string));
+
+            foreach (var pairing in pairings)
+            {
+                var p1 = await _client.GetPlayerAsync(pairing.Player1, cancellationToken);
+                var p2 = await _client.GetPlayerAsync(pairing.Player2, cancellationToken);
+                var result = results.FirstOrDefault(w => w.PairingId == pairing.PairingId);
+
+                var winnerText = "";
+                var resultText = "";
+
+                if (result == null)
+                {
+                    winnerText = "Incomplete";
+                    resultText = " - ";
+                }
+                else if (result.Draw)
+                {
+                    winnerText = "Draw";
+                    resultText = $"{result.Wins}-{result.Losses}";
+                }
+                else
+                {
+                    var winner = new List<Player> { p1, p2 }.Single(w => w.PlayerId == result.WinningPlayerId.Value);
+                    winnerText = winner.Username;
+                    resultText = $"{result.Wins}-{result.Losses}";
+                }
+
+                dt.Rows.Add(winnerText, $"{p1.Username} vs. {p2.Username}", resultText);
+            }
 
             var stringTable = $"```{AsciiTableGenerator.CreateAsciiTableFromDataTable(dt)}```";
 
@@ -93,13 +229,23 @@ namespace Brakt.Bot.Formatters
 
         public async Task<string> FormatTournamentWinnersAsync(IEnumerable<TournamentWinner> winners, CancellationToken cancellationToken)
         {
-            await Task.CompletedTask;
+            if (winners == null || !winners.Any()) return "Huh, guess nobody won.";
 
-            using var dt = GetMockTable();
+            if (winners.Count() == 1)
+            {
+                var player = await _client.GetPlayerAsync(winners.Single().PlayerId, cancellationToken);
 
-            var stringTable = $"```{AsciiTableGenerator.CreateAsciiTableFromDataTable(dt)}```";
+                return $"{player.Username} is victorious!";
+            }
 
-            return stringTable;
+            var players = new List<Player>();
+
+            foreach (var winner in winners)
+            {
+                players.Add(await _client.GetPlayerAsync(winner.PlayerId, cancellationToken));
+            }
+
+            return $"Behold your winners:\n```{string.Join("\n", players.Select(s => s.Username))}```";
         }
     }
 

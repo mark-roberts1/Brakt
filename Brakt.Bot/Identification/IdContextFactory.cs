@@ -236,6 +236,17 @@ namespace Brakt.Bot.Identification
             return new IdContext(player);
         }
 
+        public async Task<IdContext> GetIdContextAsync(ulong userId, Group group, CancellationToken cancellationToken)
+        {
+            var player = await _client.GetDiscordPlayerAsync((long)userId, cancellationToken);
+
+            if (player == null) throw new ArgumentException("Player has not registered yet. Player will be registered when they issue their first brakt command - try `brakt help`");
+
+            var member = await GetGroupMemberCreateIfNecessaryAsync(group.GroupId, player.PlayerId, cancellationToken);
+
+            return new IdContext(group, member, player);
+        }
+
         private async Task<Group> GetGroupCreateIfNecessaryAsync(DiscordGuild discordGroup, CancellationToken cancellationToken)
         {
             if (discordGroup == null) return null;

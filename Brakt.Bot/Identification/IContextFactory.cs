@@ -1,4 +1,5 @@
-﻿using DSharpPlus.EventArgs;
+﻿using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -47,5 +48,6 @@ namespace Brakt.Bot.Identification
         Task<IdContext> GetIdContextAsync(ChannelCreateEventArgs args, CancellationToken cancellationToken);
         Task<IdContext> GetIdContextAsync(DmChannelCreateEventArgs args, CancellationToken cancellationToken);
         Task<IdContext> GetIdContextAsync(SocketCloseEventArgs args, CancellationToken cancellationToken);
+        Task<IdContext> GetIdContextAsync(ulong userId, Group group, CancellationToken cancellationToken);
     }
 }

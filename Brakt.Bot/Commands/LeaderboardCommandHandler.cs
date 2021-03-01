@@ -47,7 +47,7 @@ namespace Brakt.Bot.Commands
                 return;
             }
 
-            var rankedStats = stats.OrderByDescending(ob => ob.Wins).ThenBy(tb => tb.Losses);
+            var rankedStats = stats.OrderByDescending(ob => ob.Wins).ThenBy(tb => tb.Losses).ThenByDescending(tbd => tbd.TournamentWins);
 
             var lbDisplay = await _formatter.FormatAsLeaderboardAsync(stats, cancellationToken);
 
