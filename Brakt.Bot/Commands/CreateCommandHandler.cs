@@ -31,6 +31,9 @@ namespace Brakt.Bot.Commands
 
         public string Command => "create";
 
+        public string HelpMessage 
+            => "Create a new tournament.\n   * Arguments:\n     * [swiss|single|rr] - determines the type of tournament that will be generated.Default swiss.\n     * [dd: HH:mm:ss] - Time until scheduled to start. Default 1 hour.\n     * #tag1 #tag2 ... #tagN - useful for finding player/group statistics. At least one tag argument is required";
+
         public async Task ExecuteAsync(MessageCreateEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken)
         {
             if (cmdToken.Tags == null || !cmdToken.Tags.Any())

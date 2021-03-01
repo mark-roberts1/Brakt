@@ -25,6 +25,9 @@ namespace Brakt.Bot.Commands
 
         public string Command => "list";
 
+        public string HelpMessage
+            => "Lists tournaments associated with the server, past or anticipated.\n   * Arguments:\n     * [all] - optional.If specified, this will show all tournaments.";
+
         public async Task ExecuteAsync(MessageCreateEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken)
         {
             if (!userContext.IsGroupContext)

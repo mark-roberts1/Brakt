@@ -12,6 +12,7 @@ namespace Brakt.Bot.Commands
     public interface ICommandHandler
     {
         string Command { get; }
+        string HelpMessage { get; }
 
         Task ExecuteAsync(MessageCreateEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken);
         Task ExecuteAsync(MessageReactionRemoveEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken);

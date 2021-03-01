@@ -24,6 +24,9 @@ namespace Brakt.Bot.Commands
 
         public string Command => "report";
 
+        public string HelpMessage
+            => "Report pairing results.\n   * Arguments:\n     * #-# - report <your number of wins>-<opponent number of wins>";
+
         public async Task ExecuteAsync(MessageCreateEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken)
         {
             if (cmdToken.Arguments == null || cmdToken.Arguments.Count() == 0)

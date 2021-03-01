@@ -23,6 +23,9 @@ namespace Brakt.Bot.Commands
 
         public string Command => "cancel";
 
+        public string HelpMessage 
+            => "Cancel a tournament. If underway, stats will be cleared for the given tournament.\n   * Arguments:\n     * [tournament id] - an integer id given when a tournament is generated. This can be found with the list command if it has been forgotten.";
+
         public async Task ExecuteAsync(MessageCreateEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken)
         {
             if (!userContext.IsGroupMemberContext || !userContext.GroupMember.IsAdmin || !userContext.GroupMember.IsOwner)

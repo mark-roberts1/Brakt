@@ -24,6 +24,9 @@ namespace Brakt.Bot.Commands
 
         public string Command => "join";
 
+        public string HelpMessage 
+            => "Join a created tournament that is not started. If tournament has fired, entry will not be permitted. An alternative to this is reacting to the tournament create message with the hand raise emoji.\n     * [tournament id] - an integer id given when a tournament is generated.This can be found with the list command if it has been forgotten.";
+
         public async Task ExecuteAsync(MessageCreateEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken)
         {
             int tournamentId;

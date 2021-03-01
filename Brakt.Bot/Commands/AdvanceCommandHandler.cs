@@ -25,6 +25,9 @@ namespace Brakt.Bot.Commands
 
         public string Command => "advance";
 
+        public string HelpMessage 
+            => "Advances tournament to the next round. If any matches are underway, the result will be recorded as a draw.\n     * [tournament id] - an integer id given when a tournament is generated. This can be found with the list command if it has been forgotten.";
+
         public async Task ExecuteAsync(MessageCreateEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken)
         {
             if (!userContext.IsGroupMemberContext)

@@ -25,6 +25,9 @@ namespace Brakt.Bot.Commands
 
         public string Command => "leaderboard";
 
+        public string HelpMessage 
+            => "Within the context of a discord server, this will show you the leaderboard for tournaments held on the server.\n   * Arguments:\n     * #tag1 #tag2 ... #tagN - optional. If no tags specified, all stats for all tags will be shown.";
+
         public async Task ExecuteAsync(MessageCreateEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken)
         {
             if (!userContext.IsGroupContext)

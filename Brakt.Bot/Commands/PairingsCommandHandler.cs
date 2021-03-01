@@ -25,6 +25,9 @@ namespace Brakt.Bot.Commands
 
         public string Command => "pairings";
 
+        public string HelpMessage
+            => "Show the generated pairings for the anticipated round.\n     * [tournament id] - an integer id given when a tournament is generated. This can be found with the list command if it has been forgotten.";
+
         public async Task ExecuteAsync(MessageCreateEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken)
         {
             int tournamentId;

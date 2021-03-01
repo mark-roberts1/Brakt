@@ -25,6 +25,9 @@ namespace Brakt.Bot.Commands
 
         public string Command => "results";
 
+        public string HelpMessage
+            => "If tournament concluded, shows tournament winner. If underway, shows last round results.\n     * [tournament id] - an integer id given when a tournament is generated.This can be found with the list command if it has been forgotten.";
+
         public async Task ExecuteAsync(MessageCreateEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken)
         {
             int tournamentId;

@@ -25,6 +25,9 @@ namespace Brakt.Bot.Commands
 
         public string Command => "stats";
 
+        public string HelpMessage
+            => "Within the context of a discord server, this will return stats for a player in the context of the server. If sent via DM, stats will be returned for all servers where that player is a member.\n   * Arguments:\n     * #tag1 #tag2 ... #tagN - optional. If no tags specified, all stats for all tags will be shown.";
+
         public async Task ExecuteAsync(MessageCreateEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken)
         {
             IEnumerable<Statistic> stats = null;
