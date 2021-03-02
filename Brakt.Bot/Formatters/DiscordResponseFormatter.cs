@@ -245,7 +245,13 @@ namespace Brakt.Bot.Formatters
                 players.Add(await _client.GetPlayerAsync(winner.PlayerId, cancellationToken));
             }
 
-            return $"Behold your winners:\n```{string.Join("\n", players.Select(s => s.Username))}```";
+            using var dt = new DataTable();
+            dt.Columns.Add("Player", typeof(string));
+
+            foreach (var player in players)
+                dt.Rows.Add(player.Username);
+
+            return $"Behold your winners:\n```{AsciiTableGenerator.CreateAsciiTableFromDataTable(dt)}```";
         }
     }
 
