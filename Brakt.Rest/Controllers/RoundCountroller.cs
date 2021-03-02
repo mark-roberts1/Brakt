@@ -33,7 +33,8 @@ namespace Brakt.Rest.Controllers
         [HttpGet("{id}/pairings")]
         public async Task<IEnumerable<Pairing>> GetPairingsAsync([FromRoute] int id, CancellationToken cancellationToken)
         {
-            return await _dataLayer.GetPairingsAsync(id, cancellationToken);
+            var pairings = await _dataLayer.GetPairingsAsync(id, cancellationToken);
+            return pairings;
         }
 
         [HttpGet("{id}/results")]

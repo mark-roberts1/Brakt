@@ -69,7 +69,6 @@ namespace Brakt.Rest.Data
                 RoundQueries.INSERT_PAIRING,
                 CommandType.Text,
                 connection,
-                DbParameter.From("$pairingId", pairing.PairingId),
                 DbParameter.From("$player1", pairing.Player1),
                 DbParameter.From("$player2", pairing.Player2),
                 DbParameter.From("$roundId", pairing.RoundId),

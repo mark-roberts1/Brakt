@@ -1,8 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RuntimeIdentifiers>win10-x64;ubuntu-arm64</RuntimeIdentifiers>
+    <UserSecretsId>6e0606d1-7965-4dff-a3e5-14e3cb51d52f</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

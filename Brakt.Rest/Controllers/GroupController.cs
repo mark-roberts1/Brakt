@@ -106,9 +106,9 @@ namespace Brakt.Rest.Controllers
         }
 
         [HttpGet("{id}/tournaments")]
-        public async Task<IEnumerable<Tournament>> GetTournamentsAsync([FromRoute] int groupId, CancellationToken cancellationToken)
+        public async Task<IEnumerable<Tournament>> GetTournamentsAsync([FromRoute] int id, CancellationToken cancellationToken)
         {
-            return await _dataLayer.GetTournamentsAsync(groupId, cancellationToken);
+            return await _dataLayer.GetTournamentsAsync(id, cancellationToken);
         }
 
         [HttpGet("{id}/stats")]

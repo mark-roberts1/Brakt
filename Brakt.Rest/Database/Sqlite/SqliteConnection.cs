@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Data.SQLite;
 
 namespace Brakt.Rest.Database.Sqlite
 {
@@ -14,7 +13,7 @@ namespace Brakt.Rest.Database.Sqlite
         /// <summary>
         /// The underlying <see cref="SQLiteConnection"/>
         /// </summary>
-        public SQLiteConnection Connection { get; }
+        public Microsoft.Data.Sqlite.SqliteConnection Connection { get; }
 
         /// <summary>
         /// Constructs an instance of <see cref="SqliteConnection"/> using the provided connection string.
@@ -22,14 +21,14 @@ namespace Brakt.Rest.Database.Sqlite
         /// <param name="connectionString">Information describing how to connect to the database.</param>
         public SqliteConnection(string connectionString)
         {
-            Connection = new SQLiteConnection(connectionString);
+            Connection = new Microsoft.Data.Sqlite.SqliteConnection(connectionString);
         }
 
         /// <summary>
-        /// Constructs an instance of <see cref="SqliteConnection"/> using an existing <see cref="SQLiteConnection"/>
+        /// Constructs an instance of <see cref="SqliteConnection"/> using an existing <see cref="Microsoft.Data.Sqlite.SqliteConnection"/>
         /// </summary>
         /// <param name="connection">An existing connection to a SQLite database.</param>
-        public SqliteConnection(SQLiteConnection connection)
+        public SqliteConnection(Microsoft.Data.Sqlite.SqliteConnection connection)
         {
             Connection = connection;
         }

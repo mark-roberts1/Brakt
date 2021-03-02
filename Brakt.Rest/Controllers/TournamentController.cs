@@ -123,7 +123,10 @@ namespace Brakt.Rest.Controllers
 
             await _dataLayer.UpdateTournamentAsync(tournament, cancellationToken);
 
-            await facilitator.GeneratePairingsAsync(id, 1, cancellationToken);
+            var pairings = await facilitator.GeneratePairingsAsync(id, 1, cancellationToken);
+
+            foreach (var pairing in pairings)
+                await _dataLayer.AddPairingAsync(pairing, cancellationToken);
 
             return (await _dataLayer.GetRoundsAsync(id, cancellationToken)).Single(w => w.RoundNumber == 1);
         }
@@ -147,7 +150,10 @@ namespace Brakt.Rest.Controllers
 
             var facilitator = _tournamentFacilitatorFactory.GetTournamentFacilitator(tournament.BracketType);
 
-            await facilitator.GeneratePairingsAsync(id, nextRoundNumber, cancellationToken);
+            var pairings = await facilitator.GeneratePairingsAsync(id, nextRoundNumber, cancellationToken);
+
+            foreach (var pairing in pairings)
+                await _dataLayer.AddPairingAsync(pairing, cancellationToken);
 
             return (await _dataLayer.GetRoundsAsync(id, cancellationToken)).Single(w => w.RoundNumber == nextRoundNumber);
         }

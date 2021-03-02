@@ -4,7 +4,6 @@ using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Data.SQLite;
 
 namespace Brakt.Rest.Database.Sqlite
 {
@@ -19,11 +18,11 @@ namespace Brakt.Rest.Database.Sqlite
         /// </summary>
         public SqliteCommand()
         {
-            _command = new SQLiteCommand();
+            _command = new Microsoft.Data.Sqlite.SqliteCommand();
             Parameters = new List<IParameter>();
         }
 
-        private readonly SQLiteCommand _command;
+        private readonly Microsoft.Data.Sqlite.SqliteCommand _command;
         
         /// <inheritdoc/>
         public string CommandText
@@ -142,7 +141,7 @@ namespace Brakt.Rest.Database.Sqlite
             {
                 foreach (var param in Parameters)
                 {
-                    _command.Parameters.Add(new SQLiteParameter(param.Name, param.Value));
+                    _command.Parameters.Add(new Microsoft.Data.Sqlite.SqliteParameter(param.Name, param.Value));
                 }
             }
         }

@@ -95,14 +95,12 @@ namespace Brakt.Rest.Data
 
         internal const string INSERT_PAIRING = @"
             INSERT INTO Pairing (
-                PairingId,
                 Player1,
                 Player2,
                 RoundId,
                 Concluded
             )
             VALUES (
-                $pairingId,
                 $player1,
                 $player2,
                 $roundId,
