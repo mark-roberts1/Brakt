@@ -127,6 +127,7 @@ namespace Brakt.Rest.Data
         ";
 
         internal const string DELETE_BRAKT_PLAYER = @"
+            DELETE FROM PlayerGroupMembership WHERE PlayerId IN (SELECT PlayerId FROM Player WHERE Username = $username);
             DELETE FROM Player WHERE Username = $username; 
             INSERT INTO Migration ( MigrationId ) VALUES ( 2 );
         ";
