@@ -462,7 +462,7 @@ namespace Brakt.Rest.Data
         {
             await EnsureMigrationTableExistsAsync(cancellationToken);
 
-            if (!(await HasMigrationAppliedAsync(Migrations.INITIAL_DB_STATE_ID, cancellationToken)))
+            if (!await HasMigrationAppliedAsync(Migrations.INITIAL_DB_STATE_ID, cancellationToken))
             {
                 using var connection = _connectionFactory.BuildConnection(_connectionString);
                 using var command = _commandFactory.BuildCommand(Migrations.INITIAL_DB_STATE, CommandType.Text, connection);
@@ -471,6 +471,15 @@ namespace Brakt.Rest.Data
                 await command.ExecuteNonQueryAsync(cancellationToken);
 
                 await AddPlayerAsync(Player.Bye, cancellationToken);
+            }
+
+            if (!await HasMigrationAppliedAsync(Migrations.DELETE_BRAKT_BOT_PLAYER_ID, cancellationToken))
+            {
+                using var connection = _connectionFactory.BuildConnection(_connectionString);
+                using var command = _commandFactory.BuildCommand(Migrations.DELETE_BRAKT_PLAYER, CommandType.Text, connection, DbParameter.From("$username", "Brakt"));
+
+                await connection.OpenAsync(cancellationToken);
+                await command.ExecuteNonQueryAsync(cancellationToken);
             }
         }
 

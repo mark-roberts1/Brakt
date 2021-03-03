@@ -155,6 +155,8 @@ namespace Brakt.Bot.Identification
 
             foreach (var member in args.Members)
             {
+                if (member.IsCurrent) continue;
+
                 var player = await GetPlayerCreateIfNecessaryAsync(member, cancellationToken);
                 var groupMember = await GetGroupMemberCreateIfNecessaryAsync(group.GroupId, player.PlayerId, cancellationToken);
 

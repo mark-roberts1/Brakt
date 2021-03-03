@@ -16,6 +16,7 @@ namespace Brakt.Rest.Data
         internal const string HAS_MIGRATION_APPLIED = @"SELECT COUNT(*) FROM Migration WHERE MigrationId = $id;";
 
         internal const int INITIAL_DB_STATE_ID = 1;
+        internal const int DELETE_BRAKT_BOT_PLAYER_ID = 2;
 
         internal const string INITIAL_DB_STATE = @"
             CREATE TABLE IF NOT EXISTS Player (
@@ -123,6 +124,11 @@ namespace Brakt.Rest.Data
             ) WITHOUT ROWID;
 
             INSERT INTO Migration ( MigrationId ) VALUES ( 1 );
+        ";
+
+        internal const string DELETE_BRAKT_PLAYER = @"
+            DELETE FROM Player WHERE Username = $username; 
+            INSERT INTO Migration ( MigrationId ) VALUES ( 2 );
         ";
     }
 }
