@@ -57,7 +57,7 @@ namespace Brakt.Bot.Formatters
                 prefetchData.Add(await _client.GetPlayerAsync(playerId, cancellationToken));
             }
 
-            foreach (var stat in stats)
+            foreach (var stat in stats.OrderByDescending(ob => ob.Wins).ThenBy(tb => tb.Losses).ThenByDescending(tbd => tbd.TournamentWins))
             {
                 bool rankChanged = false;
                 var player = prefetchData.First(w => w.PlayerId == stat.PlayerId);

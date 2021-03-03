@@ -46,9 +46,13 @@ namespace Brakt.Bot.Commands
                     cancellationToken)
                 };
             }
-            else if (userContext.IsPlayerContext)
+            else if (userContext.IsPlayerContext && !cmdToken.Tags.Any())
             {
                 stats = await _client.GetPlayerStatisticsAsync(userContext.Player.PlayerId, cancellationToken);
+            }
+            else if (userContext.IsPlayerContext)
+            {
+                stats = await _client.GetPlayerStatisticsAsync(new PlayerStatsRequest { PlayerId = userContext.Player.PlayerId, Tags = cmdToken.Tags.ToList() }, cancellationToken);
             }
 
             if (stats == null || !stats.Any())
