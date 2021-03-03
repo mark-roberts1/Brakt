@@ -43,6 +43,8 @@ namespace Brakt.Rest.Logic
                 var p1 = ordered[i];
                 var p2 = ordered[(i + roundNumber) % count];
 
+                if (pairings.Any(w => w.Player1 == p1.PlayerId || w.Player2 == p2.PlayerId)) continue;
+
                 pairings.Add(new Pairing
                 {
                     Player1 = p1.PlayerId,
