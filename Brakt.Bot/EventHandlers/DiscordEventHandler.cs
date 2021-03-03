@@ -163,6 +163,8 @@ namespace Brakt.Bot.EventHandlers
 
         public async Task HandleAsync(GuildBanAddEventArgs args)
         {
+            if (args.Member.IsCurrent) return;
+
             using var cts = _ctsFac();
             var userCtx = await _contextFactory.GetIdContextAsync(args, cts.Token);
 
@@ -171,6 +173,8 @@ namespace Brakt.Bot.EventHandlers
 
         public async Task HandleAsync(GuildBanRemoveEventArgs args)
         {
+            if (args.Member.IsCurrent) return;
+
             using var cts = _ctsFac();
             var userCtx = await _contextFactory.GetIdContextAsync(args, cts.Token);
 
@@ -186,6 +190,8 @@ namespace Brakt.Bot.EventHandlers
 
         public async Task HandleAsync(GuildMemberRemoveEventArgs args)
         {
+            if (args.Member.IsCurrent) return;
+
             using var cts = _ctsFac();
             var userCtx = await _contextFactory.GetIdContextAsync(args, cts.Token);
 
@@ -200,12 +206,16 @@ namespace Brakt.Bot.EventHandlers
 
         public async Task HandleAsync(UserUpdateEventArgs args)
         {
+            if (args.UserAfter.IsCurrent) return;
+
             using var cts = _ctsFac();
             var userCtx = await _contextFactory.GetIdContextAsync(args, cts.Token);
         }
 
         public async Task HandleAsync(GuildMemberAddEventArgs args)
         {
+            if (args.Member.IsCurrent) return;
+
             using var cts = _ctsFac();
             var userCtx = await _contextFactory.GetIdContextAsync(args, cts.Token);
 
@@ -221,12 +231,16 @@ namespace Brakt.Bot.EventHandlers
 
         public async Task HandleAsync(UserSettingsUpdateEventArgs args)
         {
+            if (args.User.IsCurrent) return;
+
             using var cts = _ctsFac();
             var userCtx = await _contextFactory.GetIdContextAsync(args, cts.Token);
         }
 
         public async Task HandleAsync(GuildMemberUpdateEventArgs args)
         {
+            if (args.Member.IsCurrent) return;
+
             using var cts = _ctsFac();
             var userCtx = await _contextFactory.GetIdContextAsync(args, cts.Token);
         }
