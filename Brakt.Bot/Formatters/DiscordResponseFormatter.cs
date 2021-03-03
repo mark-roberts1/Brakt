@@ -62,7 +62,7 @@ namespace Brakt.Bot.Formatters
                 bool rankChanged = false;
                 var player = prefetchData.First(w => w.PlayerId == stat.PlayerId);
 
-                if (stat.Wins != prevWins && stat.Losses != prevLosses && stat.TournamentWins != prevTournamentWins)
+                if (stat.Wins != prevWins || stat.Losses != prevLosses || stat.TournamentWins != prevTournamentWins)
                 {
                     rank++;
                     prevWins = stat.Wins;
