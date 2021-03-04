@@ -33,6 +33,7 @@ namespace Brakt.Bot
             services.AddTransient<IBraktApiClient>(p => new BraktApiClient(p.GetService<IOptions<ApiConfiguration>>().Value));
             services.AddTransient(p => GetTokenSource(p));
             services.AddTransient<IResponseFormatter, DiscordResponseFormatter>();
+            services.AddTransient<ITableFormatter, AsciiTableFormatter>();
 
             return services;
         }

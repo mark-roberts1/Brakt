@@ -2,6 +2,7 @@
 using Brakt.Bot.Identification;
 using Brakt.Bot.Interpretor;
 using Brakt.Client;
+using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using System;
 using System.Collections.Generic;
@@ -40,8 +41,22 @@ namespace Brakt.Bot.Commands
 
             var tournaments = await _client.GetTournamentsAsync(userContext.Group.GroupId, cancellationToken);
 
+            if (!tournaments.Any())
+            {
+                var msg = await _formatter.FormatTournamentListAsync(tournaments, cancellationToken);
+
+                await args.Message.RespondAsync(msg);
+                return;
+            }
+
             if (!includeAll)
                 tournaments = tournaments.Where(w => !w.Completed);
+
+            if (!tournaments.Any())
+            {
+                await args.Message.RespondAsync("No upcoming tournaments. Use `brakt list all` to show completed tournaments.");
+                return;
+            }
 
             var message = await _formatter.FormatTournamentListAsync(tournaments, cancellationToken);
 
