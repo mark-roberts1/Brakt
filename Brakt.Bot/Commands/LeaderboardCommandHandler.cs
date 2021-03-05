@@ -12,15 +12,10 @@ using System.Threading.Tasks;
 
 namespace Brakt.Bot.Commands
 {
-    public class LeaderboardCommandHandler : ICommandHandler
+    public class LeaderboardCommandHandler : CommandHandlerBase, ICommandHandler
     {
-        private readonly IBraktApiClient _client;
-        private readonly IResponseFormatter _formatter;
-
-        public LeaderboardCommandHandler(IBraktApiClient client, IResponseFormatter formatter)
+        public LeaderboardCommandHandler(IBraktApiClient client, IResponseFormatter formatter) : base(client, formatter)
         {
-            _client = client;
-            _formatter = formatter;
         }
 
         public string Command => "leaderboard";
@@ -28,14 +23,14 @@ namespace Brakt.Bot.Commands
         public string HelpMessage 
             => "Within the context of a discord server, this will show you the leaderboard for tournaments held on the server.\n   * Arguments:\n     * #tag1 #tag2 ... #tagN - optional. If no tags specified, all stats for all tags will be shown.";
 
-        public async Task ExecuteAsync(MessageCreateEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken)
+        public override async Task ExecuteAsync(MessageCreateEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken)
         {
             if (!userContext.IsGroupContext)
             {
                 await args.Message.RespondAsync("This command is only available in the context of a server. Did you mean to use ```brakt stats```?");
             }
 
-            var stats = await _client.GetGroupStatisticsAsync(new GroupStatsRequest
+            var stats = await Client.GetGroupStatisticsAsync(new GroupStatsRequest
             {
                 GroupId = userContext.Group.GroupId,
                 Tags = cmdToken.Tags.ToList()
@@ -49,24 +44,9 @@ namespace Brakt.Bot.Commands
 
             var rankedStats = stats.OrderByDescending(ob => ob.Wins).ThenBy(tb => tb.Losses).ThenByDescending(tbd => tbd.TournamentWins);
 
-            var lbDisplay = await _formatter.FormatAsLeaderboardAsync(stats, cancellationToken);
+            var lbDisplay = await Formatter.FormatAsLeaderboardAsync(stats, cancellationToken);
 
             await args.Message.RespondAsync(lbDisplay);
-        }
-
-        public Task ExecuteAsync(MessageReactionRemoveEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken)
-        {
-            return Task.CompletedTask;
-        }
-
-        public Task ExecuteAsync(MessageReactionAddEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken)
-        {
-            return Task.CompletedTask;
-        }
-
-        public Task ExecuteAsync(MessageUpdateEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken)
-        {
-            return Task.CompletedTask;
         }
     }
 }

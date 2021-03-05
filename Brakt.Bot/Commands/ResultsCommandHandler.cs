@@ -12,15 +12,10 @@ using System.Threading.Tasks;
 
 namespace Brakt.Bot.Commands
 {
-    public class ResultsCommandHandler : ICommandHandler
+    public class ResultsCommandHandler : CommandHandlerBase, ICommandHandler
     {
-        private readonly IBraktApiClient _client;
-        private readonly IResponseFormatter _formatter;
-
-        public ResultsCommandHandler(IBraktApiClient client, IResponseFormatter formatter)
+        public ResultsCommandHandler(IBraktApiClient client, IResponseFormatter formatter) : base(client, formatter)
         {
-            _client = client;
-            _formatter = formatter;
         }
 
         public string Command => "results";
@@ -28,62 +23,24 @@ namespace Brakt.Bot.Commands
         public string HelpMessage
             => "If tournament concluded, shows tournament winner. If underway, shows last round results.\n     * [tournament id] - an integer id given when a tournament is generated.This can be found with the list command if it has been forgotten.";
 
-        public async Task ExecuteAsync(MessageCreateEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken)
+        public override async Task ExecuteAsync(MessageCreateEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken)
         {
-            int tournamentId;
+            AssertGroupMemberContext(userContext);
 
-            try
+            if (!TryGetTournamentId(cmdToken.Arguments, out int tournamentId))
             {
-                if (!TryGetTournamentId(cmdToken.Arguments, out tournamentId))
-                {
-                    await args.Message.RespondAsync("TournamentId argument required.");
-                    return;
-                }
-            }
-            catch (ArgumentException e)
-            {
-                await args.Message.RespondAsync(e.Message);
+                await args.Message.RespondAsync("TournamentId argument required.");
                 return;
             }
 
-            var tournament = await _client.GetTournamentAsync(tournamentId, cancellationToken);
+            var tournament = await Client.GetTournamentAsync(tournamentId, cancellationToken);
 
-            var message = await _formatter.FormatTournamentResultsAsync(tournament, cancellationToken);
+            AssertTournamentExists(tournament);
+            AssertTournamentBelongsToGroup(tournament, userContext.GroupMember.GroupId);
+
+            var message = await Formatter.FormatTournamentResultsAsync(tournament, cancellationToken);
 
             await args.Message.RespondAsync(message);
-        }
-
-        private bool TryGetTournamentId(IEnumerable<string> args, out int tournamentId)
-        {
-            tournamentId = -1;
-
-            if (args == null || !args.Any()) return false;
-
-            var intArgs = args.Where(w => int.TryParse(w, out int _));
-
-            if (!intArgs.Any())
-                return false;
-            else if (intArgs.Count() > 1)
-                throw new ArgumentException($"Cannot determine which integer is tournament id from {string.Join(", ", intArgs.ToArray())}");
-            else
-                tournamentId = int.Parse(intArgs.Single());
-
-            return true;
-        }
-
-        public Task ExecuteAsync(MessageReactionRemoveEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken)
-        {
-            return Task.CompletedTask;
-        }
-
-        public Task ExecuteAsync(MessageReactionAddEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken)
-        {
-            return Task.CompletedTask;
-        }
-
-        public Task ExecuteAsync(MessageUpdateEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken)
-        {
-            return Task.CompletedTask;
         }
     }
 }

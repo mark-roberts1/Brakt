@@ -56,8 +56,8 @@ namespace Brakt.Rest.Controllers
 
             var activeTournaments = await _dataLayer.GetTournamentsAsync(request.GroupId, cancellationToken);
 
-            if (activeTournaments.Any(w => w.Tags.Select(s => s.TagValue).IsEquivalentTo(request.Tags) && w.StartDate == request.StartDate))
-                throw new ArgumentException("A tournament with the same tags is slated for the same time.");
+            if (activeTournaments.Any(w => w.Tags.Select(s => s.TagValue).IsEquivalentTo(request.Tags) && !w.Completed))
+                throw new ArgumentException("A tournament with the same tags is already underway. Complete that one to start a new one.");
 
             await _dataLayer.AddTournamentAsync(request, cancellationToken);
 

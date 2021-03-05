@@ -13,15 +13,10 @@ using System.Threading.Tasks;
 
 namespace Brakt.Bot.Commands
 {
-    public class ListCommandHandler : ICommandHandler
+    public class ListCommandHandler : CommandHandlerBase, ICommandHandler
     {
-        private readonly IBraktApiClient _client;
-        private readonly IResponseFormatter _formatter;
-
-        public ListCommandHandler(IBraktApiClient client, IResponseFormatter formatter)
+        public ListCommandHandler(IBraktApiClient client, IResponseFormatter formatter) : base(client, formatter)
         {
-            _client = client;
-            _formatter = formatter;
         }
 
         public string Command => "list";
@@ -29,21 +24,17 @@ namespace Brakt.Bot.Commands
         public string HelpMessage
             => "Lists tournaments associated with the server, past or anticipated.\n   * Arguments:\n     * [all] - optional.If specified, this will show all tournaments.";
 
-        public async Task ExecuteAsync(MessageCreateEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken)
+        public override async Task ExecuteAsync(MessageCreateEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken)
         {
-            if (!userContext.IsGroupContext)
-            {
-                await args.Message.RespondAsync("This command is only valid in the context of a Server.");
-                return;
-            }
+            AssertGroupMemberContext(userContext);
 
             var includeAll = cmdToken.Arguments != null && cmdToken.Arguments.Any(w => w == "all");
 
-            var tournaments = await _client.GetTournamentsAsync(userContext.Group.GroupId, cancellationToken);
+            var tournaments = await Client.GetTournamentsAsync(userContext.Group.GroupId, cancellationToken);
 
             if (!tournaments.Any())
             {
-                var msg = await _formatter.FormatTournamentListAsync(tournaments, cancellationToken);
+                var msg = await Formatter.FormatTournamentListAsync(tournaments, cancellationToken);
 
                 await args.Message.RespondAsync(msg);
                 return;
@@ -58,24 +49,9 @@ namespace Brakt.Bot.Commands
                 return;
             }
 
-            var message = await _formatter.FormatTournamentListAsync(tournaments, cancellationToken);
+            var message = await Formatter.FormatTournamentListAsync(tournaments, cancellationToken);
 
             await args.Message.RespondAsync(message);
-        }
-
-        public Task ExecuteAsync(MessageReactionRemoveEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken)
-        {
-            return Task.CompletedTask;
-        }
-
-        public Task ExecuteAsync(MessageReactionAddEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken)
-        {
-            return Task.CompletedTask;
-        }
-
-        public Task ExecuteAsync(MessageUpdateEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken)
-        {
-            return Task.CompletedTask;
         }
     }
 }

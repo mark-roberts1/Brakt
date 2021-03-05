@@ -13,74 +13,35 @@ using System.Threading.Tasks;
 
 namespace Brakt.Bot.Commands
 {
-    public class JoinCommandHandler : ICommandHandler
+    public class JoinCommandHandler : CommandHandlerBase, ICommandHandler
     {
-        private readonly IBraktApiClient _client;
-
-        public JoinCommandHandler(IBraktApiClient client)
+        public JoinCommandHandler(IBraktApiClient client, IResponseFormatter formatter) : base(client, formatter)
         {
-            _client = client;
         }
 
         public string Command => "join";
 
-        public string HelpMessage 
+        public string HelpMessage
             => "Join a created tournament that is not started. If tournament has fired, entry will not be permitted. An alternative to this is reacting to the tournament create message with the hand raise emoji.\n     * [tournament id] - an integer id given when a tournament is generated.This can be found with the list command if it has been forgotten.";
 
-        public async Task ExecuteAsync(MessageCreateEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken)
+        public override async Task ExecuteAsync(MessageCreateEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken)
         {
-            int tournamentId;
-
-            try
+            if (!TryGetTournamentId(cmdToken.Arguments, out int tournamentId))
             {
-                if (!TryGetTournamentId(cmdToken.Arguments, out tournamentId))
-                {
-                    await args.Message.RespondAsync("TournamentId argument required.");
-                    return;
-                }
-            }
-            catch (ArgumentException e)
-            {
-                await args.Message.RespondAsync(e.Message);
+                await args.Message.RespondAsync("TournamentId argument required.");
                 return;
             }
 
-            await _client.RegisterPlayerAsync(new TournamentEntry { TournamentId = tournamentId, PlayerId = userContext.Player.PlayerId }, cancellationToken);
+            var tournament = await Client.GetTournamentAsync(tournamentId, cancellationToken);
+            var rounds = await Client.GetTournamentRoundsAsync(tournamentId, cancellationToken);
+
+            AssertTournamentExists(tournament);
+            AssertTournamentNotComplete(tournament);
+            AssertTournamentNotInProgress(rounds);
+
+            await Client.RegisterPlayerAsync(new TournamentEntry { TournamentId = tournamentId, PlayerId = userContext.Player.PlayerId }, cancellationToken);
 
             await args.Message.CreateReactionAsync(DiscordEmoji.FromName(BotConnector.Client, ":thumbsup:"));
-        }
-
-        private bool TryGetTournamentId(IEnumerable<string> args, out int tournamentId)
-        {
-            tournamentId = -1;
-
-            if (args == null || !args.Any()) return false;
-
-            var intArgs = args.Where(w => int.TryParse(w, out int _));
-
-            if (!intArgs.Any())
-                return false;
-            else if (intArgs.Count() > 1)
-                throw new ArgumentException($"Cannot determine which integer is tournament id from {string.Join(", ", intArgs.ToArray())}");
-            else
-                tournamentId = int.Parse(intArgs.Single());
-
-            return true;
-        }
-
-        public Task ExecuteAsync(MessageReactionRemoveEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken)
-        {
-            return Task.CompletedTask;
-        }
-
-        public Task ExecuteAsync(MessageReactionAddEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken)
-        {
-            return Task.CompletedTask;
-        }
-
-        public Task ExecuteAsync(MessageUpdateEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken)
-        {
-            return Task.CompletedTask;
         }
     }
 }

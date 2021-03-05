@@ -13,9 +13,8 @@ using System.Threading.Tasks;
 
 namespace Brakt.Bot.Commands
 {
-    public class CreateCommandHandler : ICommandHandler
+    public class CreateCommandHandler : CommandHandlerBase, ICommandHandler
     {
-        private readonly IBraktApiClient _client;
         private readonly static Regex _tsFormat = new Regex(@"\d\d\:\d\d\:\d\d\:\d\d");
         private readonly static (string Name, BracketType Value)[] _bracketTypes =
         {
@@ -24,17 +23,16 @@ namespace Brakt.Bot.Commands
             ("rr", BracketType.RoundRobin),
         };
 
-        public CreateCommandHandler(IBraktApiClient client)
+        public CreateCommandHandler(IBraktApiClient client, IResponseFormatter formatter) : base(client, formatter)
         {
-            _client = client;
         }
 
         public string Command => "create";
 
-        public string HelpMessage 
+        public string HelpMessage
             => "Create a new tournament.\n   * Arguments:\n     * [swiss|single|rr] - determines the type of tournament that will be generated.Default swiss.\n     * [dd: HH:mm:ss] - Time until scheduled to start. Default 1 hour.\n     * #tag1 #tag2 ... #tagN - useful for finding player/group statistics. At least one tag argument is required";
 
-        public async Task ExecuteAsync(MessageCreateEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken)
+        public override async Task ExecuteAsync(MessageCreateEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken)
         {
             if (cmdToken.Tags == null || !cmdToken.Tags.Any())
             {
@@ -42,35 +40,20 @@ namespace Brakt.Bot.Commands
                 return;
             }
 
-            if (!userContext.IsGroupMemberContext)
+            var request = new CreateTournamentRequest
             {
-                await args.Message.RespondAsync("A tournament must be created within the context of a group.");
-                return;
-            }
+                GroupId = userContext.GroupMember.GroupId,
+                StartDate = DateTime.Now.AddHours(1),
+                Tags = cmdToken.Tags.ToList()
+            };
 
-            if (!userContext.GroupMember.IsAdmin && !userContext.GroupMember.IsOwner)
-            {
-                await args.Message.RespondAsync("A tournament must be created by an admin.");
-                return;
-            }
+            AssertGroupMemberContext(userContext);
+            AssertUserIsAdmin(userContext.GroupMember);
 
-            var request = new CreateTournamentRequest();
-            request.GroupId = userContext.GroupMember.GroupId;
-            request.StartDate = DateTime.Now.AddHours(1);
-            request.Tags = cmdToken.Tags.ToList();
+            if (TryParseTime(cmdToken.Arguments, out TimeSpan ts)) request.StartDate = DateTime.Now + ts;
+            if (TryFindBracketType(cmdToken.Arguments, out BracketType bracketType)) request.BracketType = bracketType;
 
-            try
-            {
-                if (TryParseTime(cmdToken.Arguments, out TimeSpan ts)) request.StartDate = DateTime.Now + ts;
-                if (TryFindBracketType(cmdToken.Arguments, out BracketType bracketType)) request.BracketType = bracketType;
-            }
-            catch (Exception e)
-            {
-                await args.Message.RespondAsync($"Failed to create tournament: {e.Message}");
-                return;
-            }
-
-            var tournament = await _client.CreateTournamentAsync(request, cancellationToken);
+            var tournament = await Client.CreateTournamentAsync(request, cancellationToken);
 
             await args.Message.RespondAsync($"Tournament {tournament.TournamentId} created! To enter, type ```brakt join {tournament.TournamentId}```");
         }
@@ -109,21 +92,6 @@ namespace Brakt.Bot.Commands
 
             bracketType = _bracketTypes.Single(w => w.Name == brktArgs.Single()).Value;
             return true;
-        }
-
-        public Task ExecuteAsync(MessageReactionRemoveEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken)
-        {
-            return Task.CompletedTask;
-        }
-
-        public Task ExecuteAsync(MessageReactionAddEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken)
-        {
-            return Task.CompletedTask;
-        }
-
-        public Task ExecuteAsync(MessageUpdateEventArgs args, CommandTokens cmdToken, IdContext userContext, CancellationToken cancellationToken)
-        {
-            return Task.CompletedTask;
         }
     }
 }
