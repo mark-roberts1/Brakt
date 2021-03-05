@@ -40,6 +40,7 @@ namespace Brakt.Client
         Task<Tournament> CreateTournamentAsync(CreateTournamentRequest request, CancellationToken cancellationToken);
         Task<Tournament> UpdateTournamentAsync(Tournament tournament, CancellationToken cancellationToken);
         Task RegisterPlayerAsync(TournamentEntry entry, CancellationToken cancellationToken);
+        Task<IEnumerable<TournamentEntry>> GetTournamentEntriesAsync(int tournamentId, CancellationToken cancellationToken);
         Task RemovePlayerAsync(int tournamentId, int playerId, CancellationToken cancellationToken);
         Task<Round> StartTournamentAsync(int tournamentId, CancellationToken cancellationToken);
         Task<Round> AdvanceTournamentAsync(int tournamentId, CancellationToken cancellationToken);

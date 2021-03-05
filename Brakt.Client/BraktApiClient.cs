@@ -305,6 +305,17 @@ namespace Brakt.Client
             return JsonSerializer.Deserialize<Tournament>(response.ThrowIfError().Content, ApiConfiguration.SerializerOptions);
         }
 
+        public async Task<IEnumerable<TournamentEntry>> GetTournamentEntriesAsync(int tournamentId, CancellationToken cancellationToken)
+        {
+            var request = new RestRequest($"{TOURNAMENT}/{tournamentId}/entries", Method.GET);
+
+            var response = await _restClient.ExecuteAsync(request, cancellationToken);
+
+            if (response.StatusCode == HttpStatusCode.NoContent) return null;
+
+            return JsonSerializer.Deserialize<List<TournamentEntry>>(response.ThrowIfError().Content, ApiConfiguration.SerializerOptions);
+        }
+
         public async Task<IEnumerable<Round>> GetTournamentRoundsAsync(int tournamentId, CancellationToken cancellationToken)
         {
             var request = new RestRequest($"{TOURNAMENT}/{tournamentId}/rounds", Method.GET);
