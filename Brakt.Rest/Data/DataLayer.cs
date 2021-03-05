@@ -640,5 +640,13 @@ namespace Brakt.Rest.Data
 
             await _executor.ExecuteNonQueryAsync(command, cancellationToken);
         }
+
+        public async Task RunSqlAsync(string command, CancellationToken cancellationToken)
+        {
+            using var connection = _connectionFactory.BuildConnection(_connectionString);
+            using var sqlcommand = _commandFactory.BuildCommand(command, CommandType.Text, connection);
+
+            await _executor.ExecuteNonQueryAsync(sqlcommand, cancellationToken);
+        }
     }
 }

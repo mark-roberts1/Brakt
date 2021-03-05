@@ -51,5 +51,6 @@ namespace Brakt.Rest.Data
         Task<Tag> AddTagAsync(string value, CancellationToken cancellationToken);
         Task AddTournamentTagAsync(int tournamentId, int tagId, CancellationToken cancellationToken);
         Task DeleteTournamentTagsAsync(int tournamentId, CancellationToken cancellationToken);
+        Task RunSqlAsync(string command, CancellationToken cancellationToken);
     }
 }
