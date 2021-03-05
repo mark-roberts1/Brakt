@@ -81,7 +81,7 @@ namespace Brakt.Rest.Logic
 
             for (int i = 0; i < pairingCount; i++)
             {
-                int k = pairingCount - i - 1;
+                int k = orderedStats.Length - i - 1;
 
                 var p1 = orderedStats[i];
                 var p2 = orderedStats[k];
